@@ -1,3 +1,37 @@
 <resources>
     <string name="app_name">A to Z News Admin</string>
+    <string name="upload_news">Upload News</string>
+    <string name="upload_category">Upload News Category</string>
+    <string name="upload_ads">Update Ads</string>
+    <string name="breaking_news">Breaking</string>
+    <string name="gadgets">Gadgets</string>
+    <string name="trending_news">Trending</string>
+    <string name="enter_title">News Headline</string>
+    <string name="enter_url">Enter Url</string>
+    <string name="enter_description">Enter News Description</string>
+    <string name="todo">TODO</string>
+    <string name="native_ads_type">Native Ads Type</string>
+    <string name="show_banners">Show Banners</string>
+    <string name="banners">Banners</string>
+    <string name="upload_banner">Upload Brands</string>
+    <string name="app_open_ads">AppOpen Ads</string>
+    <string name="app_open_network_name">appOpen Network Name</string>
+    <string name="update_ads_ids">Update Ads Ids</string>
+    <string name="app_id">App Id</string>
+    <string name="app_Lovin_sdk_key">AppLovinSdkKey</string>
+    <string name="banner_top_network_name">BannerTopNetworkName</string>
+    <string name="banner_top">BannerTop</string>
+    <string name="banner_bottom_network_name">BannerBottomNetworkName</string>
+    <string name="banner_bottom">BannerBottom</string>
+    <string name="interstitial_network">InterstitialNetwork</string>
+    <string name="interstitial_ads">InterstitialAds</string>
+    <string name="native_ads_network_name">NativeAdsNetworkName</string>
+    <string name="native_ads">NativeAds</string>
+    <string name="cancel">Cancel</string>
+    <string name="update">Update</string>
+    <string name="show_categories">Show Categories</string>
+    <string name="show_breaking_news">Show Breaking News</string>
+    <string name="show_trending_news">Show Trending News</string>
+    <string name="show_gadgets_news">Show Gadgets News</string>
+    <string name="_12_00_am">12:00 AM</string>
 </resources>
