@@ -21,6 +21,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.core.text.HtmlCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -32,6 +33,7 @@ import com.atoz.atoznewsadmin.models.ApiWebServices;
 import com.atoz.atoznewsadmin.models.CatModel;
 import com.atoz.atoznewsadmin.models.MessageModel;
 import com.atoz.atoznewsadmin.utils.Utils;
+import com.bumptech.glide.Glide;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.io.ByteArrayOutputStream;
@@ -138,16 +140,16 @@ public class ShowCategory extends AppCompatActivity implements CategoryAdapter.C
             builder.setTitle("Add Sub Category or Item").setCancelable(true).setItems(items, (dialogInterface, which) -> {
                 switch (which) {
                     case 0:
-                        setUploadNewsDialog("Upload Category", catModel.getId());
+                        setUploadNewsDialog("Upload Category", catModel, "Upload");
                         break;
                     case 1:
-                        setUploadNewsDialog("upload News", catModel.getId());
+                        setUploadNewsDialog("upload News", catModel, "Upload");
                         break;
                     case 2:
-//                        uploadTopBrandsDialog(catModel, "update");
+                        setUploadNewsDialog("Upload Category", catModel, "update");
                         break;
                     case 3:
-//                        deleteCategory(catModel);
+                        deleteCategory(catModel);
                 }
             });
         } else if (catModel.getSubCat().equals("true")) {
@@ -155,7 +157,7 @@ public class ShowCategory extends AppCompatActivity implements CategoryAdapter.C
             builder.setTitle("Add Subcategories").setCancelable(true).setItems(items2, (dialogInterface, which) -> {
                 switch (which) {
                     case 0:
-                        setUploadNewsDialog("Upload Category", catModel.getId());
+                        setUploadNewsDialog("Upload Category", catModel, "Upload");
                         break;
                     case 1:
                         Intent intent = new Intent(this, ShowSubCategory.class);
@@ -163,8 +165,7 @@ public class ShowCategory extends AppCompatActivity implements CategoryAdapter.C
                         startActivity(intent);
                         break;
                     case 2:
-//                        uploadTopBrandsDialog(catModel, "update");
-
+                        setUploadNewsDialog("Upload Category", catModel, "update");
                         break;
                 }
             });
@@ -173,7 +174,7 @@ public class ShowCategory extends AppCompatActivity implements CategoryAdapter.C
             builder.setTitle("Add Item").setCancelable(true).setItems(items3, (dialogInterface, which) -> {
                 switch (which) {
                     case 0:
-                        setUploadNewsDialog("upload News", catModel.getId());
+                        setUploadNewsDialog("upload News", catModel, "Upload");
 
                         break;
                     case 1:
@@ -182,7 +183,7 @@ public class ShowCategory extends AppCompatActivity implements CategoryAdapter.C
                         startActivity(intent);
                         break;
                     case 2:
-//                        uploadTopBrandsDialog(catModel, "update");
+                        setUploadNewsDialog("Upload Category", catModel, "update");
                         break;
                 }
             });
@@ -193,7 +194,7 @@ public class ShowCategory extends AppCompatActivity implements CategoryAdapter.C
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    private void setUploadNewsDialog(String id, String catModelId) {
+    private void setUploadNewsDialog(String id, CatModel catModel, String upload) {
         dialog = new Dialog(this);
         uploadNewsBinding = UploadNewsBinding.inflate(getLayoutInflater());
         dialog.setContentView(uploadNewsBinding.getRoot());
@@ -208,6 +209,12 @@ public class ShowCategory extends AppCompatActivity implements CategoryAdapter.C
             uploadNewsBinding.radioGroup.setVisibility(View.GONE);
             uploadNewsBinding.textInputLayout.setVisibility(View.GONE);
             uploadNewsBinding.textInputLayout2.setVisibility(View.GONE);
+
+            if (upload.equals("update")) {
+                encodedImg = catModel.getBanner();
+                uploadNewsBinding.titleTv.setText(HtmlCompat.fromHtml(catModel.getTitle(), HtmlCompat.FROM_HTML_MODE_LEGACY));
+                Glide.with(this).load(ApiWebServices.base_url + "all_categories_images/" + catModel.getBanner()).into(uploadNewsBinding.choseNewsImg);
+            }
         } else
             uploadNewsBinding.newsTV.setText(id);
 
@@ -235,8 +242,8 @@ public class ShowCategory extends AppCompatActivity implements CategoryAdapter.C
 
             String title = uploadNewsBinding.titleTv.getText().toString().trim();
             if (!id.equals("Upload Category")) {
-                String url = uploadNewsBinding.titleTv.getText().toString().trim();
-                String desc = uploadNewsBinding.titleTv.getText().toString().trim();
+                String url = uploadNewsBinding.url.getText().toString().trim();
+                String desc = uploadNewsBinding.desc.getText().toString().trim();
 
                 if (encodedImg == null) {
                     loadingDialog.dismiss();
@@ -260,28 +267,59 @@ public class ShowCategory extends AppCompatActivity implements CategoryAdapter.C
                     map.put("desc", desc);
                     map.put("date", formattedDate);
                     map.put("time", selectTime);
-                    map.put("catId", catModelId);
+                    map.put("catId", catModel.getId());
 
                     call = apiInterface.uploadCatNews(map);
                     uploadData(call, dialog);
 
                 }
             } else {
-                if (encodedImg == null) {
-                    loadingDialog.dismiss();
-                    Toast.makeText(ShowCategory.this, "Please Select an Image", Toast.LENGTH_SHORT).show();
-                } else if (TextUtils.isEmpty(title)) {
-                    uploadNewsBinding.titleTv.setError("title Required");
-                    uploadNewsBinding.titleTv.requestFocus();
-                    loadingDialog.dismiss();
-                } else {
-                    map.put("img", encodedImg);
-                    map.put("title", title);
-                    map.put("date", formattedDate);
-                    map.put("time", selectTime);
-                    map.put("catId", catModelId);
-                    call = apiInterface.uploadNewsSubCategory(map);
-                    uploadData(call, dialog);
+                if (upload.equals("Upload")) {
+                    if (encodedImg == null) {
+                        loadingDialog.dismiss();
+                        Toast.makeText(ShowCategory.this, "Please Select an Image", Toast.LENGTH_SHORT).show();
+                    } else if (TextUtils.isEmpty(title)) {
+                        uploadNewsBinding.titleTv.setError("title Required");
+                        uploadNewsBinding.titleTv.requestFocus();
+                        loadingDialog.dismiss();
+                    } else {
+                        map.put("img", encodedImg);
+                        map.put("title", title);
+                        map.put("date", formattedDate);
+                        map.put("time", selectTime);
+                        map.put("catId", catModel.getId());
+                        call = apiInterface.uploadNewsSubCategory(map);
+                        uploadData(call, dialog);
+                    }
+                } else if (upload.equals("update")) {
+                    if (TextUtils.isEmpty(title)) {
+                        uploadNewsBinding.titleTv.setError("title Required");
+                        uploadNewsBinding.titleTv.requestFocus();
+                        loadingDialog.dismiss();
+                    } else {
+                        if (encodedImg.length() < 100) {
+                            map.put("img", encodedImg);
+                            map.put("deleteImg", catModel.getBanner());
+                            map.put("title", title);
+                            map.put("date", formattedDate);
+                            map.put("time", selectTime);
+                            map.put("catId", catModel.getId());
+                            map.put("key", "0");
+                            call = apiInterface.updateNewsCategory(map);
+                            uploadData(call, dialog);
+                        } else {
+                            map.put("img", encodedImg);
+                            map.put("deleteImg", catModel.getBanner());
+                            map.put("title", title);
+                            map.put("date", formattedDate);
+                            map.put("time", selectTime);
+                            map.put("catId", catModel.getId());
+                            map.put("key", "1");
+                            call = apiInterface.updateNewsCategory(map);
+                            uploadData(call, dialog);
+                        }
+
+                    }
                 }
             }
         });
@@ -319,4 +357,37 @@ public class ShowCategory extends AppCompatActivity implements CategoryAdapter.C
         });
     }
 
+    private void deleteCategory(CatModel catModel) {
+        loadingDialog.show();
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
+        builder.setTitle("Delete Banner")
+                .setMessage("Would you like to delete this banner?")
+                .setNegativeButton("Cancel", (dialogInterface, i) -> {
+                })
+                .setPositiveButton("Ok", (dialogInterface, i) -> {
+                    map.put("id", catModel.getId());
+                    map.put("img", catModel.getBanner());
+                    map.put("title", catModel.getTitle());
+                    call = apiInterface.deleteCategory(map);
+                    call.enqueue(new Callback<MessageModel>() {
+                        @Override
+                        public void onResponse(@NonNull Call<MessageModel> call, @NonNull Response<MessageModel> response) {
+                            if (response.isSuccessful()) {
+                                Toast.makeText(ShowCategory.this, Objects.requireNonNull(response.body()).getMessage(), Toast.LENGTH_SHORT).show();
+                                fetchCategory();
+                            } else {
+                                Toast.makeText(ShowCategory.this, Objects.requireNonNull(response.body()).getError(), Toast.LENGTH_SHORT).show();
+                            }
+                            loadingDialog.dismiss();
+                        }
+
+
+                        @Override
+                        public void onFailure(@NonNull Call<MessageModel> call, @NonNull Throwable t) {
+                            loadingDialog.dismiss();
+
+                        }
+                    });
+                }).show();
+    }
 }

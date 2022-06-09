@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.text.HtmlCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.atoz.atoznewsadmin.R;
@@ -37,8 +38,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull NewsViewHolder holder, int position) {
-
-        holder.title.setText(newsModels.get(position).getTitle());
+        holder.title.setText(HtmlCompat.fromHtml(newsModels.get(position).getTitle(), HtmlCompat.FROM_HTML_MODE_LEGACY));
         holder.date.setText(newsModels.get(position).getDate());
         holder.time.setText(newsModels.get(position).getTime());
         Glide.with(context).load(ApiWebServices.base_url + "all_news_images/" + newsModels.get(position).getNewsImg()).into(holder.newsImg);
@@ -53,7 +53,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
     @SuppressLint("NotifyDataSetChanged")
     public void updateList(List<NewsModel> newsModelList) {
         newsModels.clear();
-        newsModelList.addAll(newsModels);
+        newsModels.addAll(newsModelList);
         notifyDataSetChanged();
     }
 

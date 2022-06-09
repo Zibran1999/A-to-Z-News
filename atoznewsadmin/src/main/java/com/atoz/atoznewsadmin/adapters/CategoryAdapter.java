@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.text.HtmlCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.atoz.atoznewsadmin.R;
@@ -39,7 +40,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
     public void onBindViewHolder(@NonNull CategoryViewHolder holder, int position) {
 
         Glide.with(context).load(ApiWebServices.base_url + "all_categories_images/" + catModels.get(position).getBanner()).into(holder.catImage);
-        holder.title.setText(catModels.get(position).getTitle());
+        holder.title.setText(HtmlCompat.fromHtml(catModels.get(position).getTitle(), HtmlCompat.FROM_HTML_MODE_LEGACY));
         holder.itemView.setOnClickListener(view -> categoryListener.catOnClicked(catModels.get(position)));
 
     }

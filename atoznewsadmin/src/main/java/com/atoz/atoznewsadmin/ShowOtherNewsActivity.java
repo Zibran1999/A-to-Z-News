@@ -25,7 +25,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.atoz.atoznewsadmin.adapters.NewsAdapter;
-import com.atoz.atoznewsadmin.databinding.ActivityShowNewsBinding;
+import com.atoz.atoznewsadmin.databinding.ActivityShowOtherNewsBinding;
 import com.atoz.atoznewsadmin.databinding.UploadNewsBinding;
 import com.atoz.atoznewsadmin.models.ApiInterface;
 import com.atoz.atoznewsadmin.models.ApiWebServices;
@@ -52,8 +52,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ShowNewsActivity extends AppCompatActivity implements NewsAdapter.NewsInterface {
-    ActivityShowNewsBinding binding;
+public class ShowOtherNewsActivity extends AppCompatActivity implements NewsAdapter.NewsInterface {
+    ActivityShowOtherNewsBinding binding;
     List<NewsModel> newsModels;
     NewsAdapter newsAdapter;
     LinearLayoutManager layoutManager;
@@ -69,7 +69,7 @@ public class ShowNewsActivity extends AppCompatActivity implements NewsAdapter.N
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityShowNewsBinding.inflate(getLayoutInflater());
+        binding = ActivityShowOtherNewsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         loadingDialog = Utils.loadingDialog(this);
@@ -80,7 +80,7 @@ public class ShowNewsActivity extends AppCompatActivity implements NewsAdapter.N
         layoutManager.setOrientation(RecyclerView.VERTICAL);
         binding.newsRV.setLayoutManager(layoutManager);
         binding.newsRV.setAdapter(newsAdapter);
-        key = getIntent().getStringExtra("key");
+        key = getIntent().getStringExtra("tableName");
         fetchNews(key);
         launcher = registerForActivityResult(new ActivityResultContracts.GetContent(), result -> {
 
@@ -100,21 +100,20 @@ public class ShowNewsActivity extends AppCompatActivity implements NewsAdapter.N
 
 
         });
-
     }
 
     private void fetchNews(String key) {
-        newsModels.clear();
-        Call<List<NewsModel>> listCall = apiInterface.fetchNews(key);
+        Call<List<NewsModel>> listCall = apiInterface.fetchOtherNews(key);
         listCall.enqueue(new Callback<List<NewsModel>>() {
             @Override
             public void onResponse(@NonNull Call<List<NewsModel>> call, @NonNull Response<List<NewsModel>> response) {
                 if (response.isSuccessful()) {
                     if (!Objects.requireNonNull(response.body()).isEmpty()) {
+                        newsModels.clear();
                         newsModels.addAll(response.body());
                         newsAdapter.updateList(newsModels);
                         loadingDialog.dismiss();
-                        Log.d("contentValue", newsModels.get(0).getTitle());
+//                        Log.d("contentValue", newsModels.get(0).getTitle());
                     }
                 }
             }
@@ -166,16 +165,17 @@ public class ShowNewsActivity extends AppCompatActivity implements NewsAdapter.N
 
     private void deleteCall(NewsModel newsModel) {
         loadingDialog.show();
-        map.put("catId", newsModel.getCatId());
+        map.put("tableName", key);
         map.put("id", newsModel.getId());
         map.put("img", newsModel.getNewsImg());
-        call = apiInterface.deleteCatNews(map);
+
+        call = apiInterface.deleteNews(map);
         call.enqueue(new Callback<MessageModel>() {
             @Override
             public void onResponse(@NonNull Call<MessageModel> call, @NonNull Response<MessageModel> response) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(ShowNewsActivity.this, Objects.requireNonNull(response.body()).getMessage(), Toast.LENGTH_SHORT).show();
-                    fetchNews(newsModel.getCatId());
+                    Toast.makeText(ShowOtherNewsActivity.this, Objects.requireNonNull(response.body()).getMessage(), Toast.LENGTH_SHORT).show();
+                    fetchNews(key);
                 }
                 loadingDialog.dismiss();
             }
@@ -252,7 +252,8 @@ public class ShowNewsActivity extends AppCompatActivity implements NewsAdapter.N
                     map.put("time", selectTime);
                     map.put("id", newsModel.getId());
                     map.put("key", "0");
-                    call = apiInterface.updateCatNews(map);
+                    map.put("tableName", key);
+                    call = apiInterface.updateNews(map);
                 } else {
                     map.put("img", encodedImg);
                     map.put("deleteImg", newsModel.getNewsImg());
@@ -263,7 +264,8 @@ public class ShowNewsActivity extends AppCompatActivity implements NewsAdapter.N
                     map.put("time", selectTime);
                     map.put("id", newsModel.getId());
                     map.put("key", "1");
-                    call = apiInterface.updateCatNews(map);
+                    map.put("tableName", key);
+                    call = apiInterface.updateNews(map);
                 }
 
                 uploadData(call, dialog);
@@ -280,7 +282,7 @@ public class ShowNewsActivity extends AppCompatActivity implements NewsAdapter.N
             @Override
             public void onResponse(@NonNull Call<MessageModel> call, @NonNull Response<MessageModel> response) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(ShowNewsActivity.this, Objects.requireNonNull(response.body()).getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ShowOtherNewsActivity.this, Objects.requireNonNull(response.body()).getMessage(), Toast.LENGTH_SHORT).show();
                     dialog.dismiss();
                     fetchNews(key);
                 }
@@ -296,6 +298,7 @@ public class ShowNewsActivity extends AppCompatActivity implements NewsAdapter.N
             }
         });
     }
+
     public String imageStore(Bitmap bitmap) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 60, stream);
