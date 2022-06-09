@@ -66,6 +66,7 @@ public class ShowCategory extends AppCompatActivity implements CategoryAdapter.C
     String encodedImg, formattedDate, selectTime;
     Map<String, String> map = new HashMap<>();
     Call<MessageModel> call;
+    Bitmap bitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,9 +90,10 @@ public class ShowCategory extends AppCompatActivity implements CategoryAdapter.C
             if (result != null) {
                 try {
                     final InputStream inputStream = getContentResolver().openInputStream(result);
-                    final Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                    bitmap = BitmapFactory.decodeStream(inputStream);
                     uploadNewsBinding.choseNewsImg.setImageBitmap(bitmap);
-                    encodedImg = imageStore(bitmap);
+                    if (bitmap != null)
+                        encodedImg = imageStore(bitmap);
 
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
@@ -209,6 +211,7 @@ public class ShowCategory extends AppCompatActivity implements CategoryAdapter.C
             uploadNewsBinding.radioGroup.setVisibility(View.GONE);
             uploadNewsBinding.textInputLayout.setVisibility(View.GONE);
             uploadNewsBinding.textInputLayout2.setVisibility(View.GONE);
+            uploadNewsBinding.textInputLayout3.setVisibility(View.GONE);
 
             if (upload.equals("update")) {
                 encodedImg = catModel.getBanner();
@@ -244,6 +247,8 @@ public class ShowCategory extends AppCompatActivity implements CategoryAdapter.C
             if (!id.equals("Upload Category")) {
                 String url = uploadNewsBinding.url.getText().toString().trim();
                 String desc = uploadNewsBinding.desc.getText().toString().trim();
+                String engDesc = uploadNewsBinding.engDesc.getText().toString().trim();
+
 
                 if (encodedImg == null) {
                     loadingDialog.dismiss();
@@ -260,11 +265,16 @@ public class ShowCategory extends AppCompatActivity implements CategoryAdapter.C
                     uploadNewsBinding.desc.setError("desc Required");
                     uploadNewsBinding.desc.requestFocus();
                     loadingDialog.dismiss();
+                } else if (TextUtils.isEmpty(engDesc)) {
+                    uploadNewsBinding.engDesc.setError("desc Required");
+                    uploadNewsBinding.engDesc.requestFocus();
+                    loadingDialog.dismiss();
                 } else {
                     map.put("img", encodedImg);
                     map.put("title", title);
                     map.put("url", url);
                     map.put("desc", desc);
+                    map.put("engDesc", engDesc);
                     map.put("date", formattedDate);
                     map.put("time", selectTime);
                     map.put("catId", catModel.getId());
@@ -329,7 +339,6 @@ public class ShowCategory extends AppCompatActivity implements CategoryAdapter.C
     public String imageStore(Bitmap bitmap) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 60, stream);
-
         byte[] imageBytes = stream.toByteArray();
         return android.util.Base64.encodeToString(imageBytes, Base64.DEFAULT);
     }

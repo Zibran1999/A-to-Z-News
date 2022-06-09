@@ -90,7 +90,8 @@ public class ShowSubCategory extends AppCompatActivity implements CategoryAdapte
                     final InputStream inputStream = getContentResolver().openInputStream(result);
                     final Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
                     uploadNewsBinding.choseNewsImg.setImageBitmap(bitmap);
-                    encodedImg = imageStore(bitmap);
+                    if (bitmap != null)
+                        encodedImg = imageStore(bitmap);
 
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
@@ -208,6 +209,7 @@ public class ShowSubCategory extends AppCompatActivity implements CategoryAdapte
             uploadNewsBinding.radioGroup.setVisibility(View.GONE);
             uploadNewsBinding.textInputLayout.setVisibility(View.GONE);
             uploadNewsBinding.textInputLayout2.setVisibility(View.GONE);
+            uploadNewsBinding.textInputLayout3.setVisibility(View.GONE);
 
             if (upload.equals("update")) {
                 encodedImg = catModel.getBanner();
@@ -243,6 +245,7 @@ public class ShowSubCategory extends AppCompatActivity implements CategoryAdapte
             if (!id.equals("Upload Category")) {
                 String url = uploadNewsBinding.url.getText().toString().trim();
                 String desc = uploadNewsBinding.desc.getText().toString().trim();
+                String engDesc = uploadNewsBinding.engDesc.getText().toString().trim();
 
                 if (encodedImg == null) {
                     loadingDialog.dismiss();
@@ -258,6 +261,10 @@ public class ShowSubCategory extends AppCompatActivity implements CategoryAdapte
                 } else if (TextUtils.isEmpty(desc)) {
                     uploadNewsBinding.desc.setError("desc Required");
                     uploadNewsBinding.desc.requestFocus();
+                    loadingDialog.dismiss();
+                } else if (TextUtils.isEmpty(engDesc)) {
+                    uploadNewsBinding.engDesc.setError("desc Required");
+                    uploadNewsBinding.engDesc.requestFocus();
                     loadingDialog.dismiss();
                 } else {
                     map.put("img", encodedImg);

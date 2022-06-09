@@ -159,7 +159,8 @@ public class MainActivity extends AppCompatActivity {
                     final InputStream inputStream = getContentResolver().openInputStream(result);
                     final Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
                     uploadNewsBinding.choseNewsImg.setImageBitmap(bitmap);
-                    encodedImg = imageStore(bitmap);
+                    if (bitmap != null)
+                        encodedImg = imageStore(bitmap);
 
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
@@ -193,6 +194,7 @@ public class MainActivity extends AppCompatActivity {
                     urlOrTabTextLayoutBinding.url.setText(Objects.requireNonNull(response.body()).getUrl());
                 }
             }
+
             @Override
             public void onFailure(@NonNull Call<UrlOrTAbTextModel> call, @NonNull Throwable t) {
                 Log.d("contentError", t.getMessage());
@@ -247,6 +249,7 @@ public class MainActivity extends AppCompatActivity {
             uploadNewsBinding.radioGroup.setVisibility(View.GONE);
             uploadNewsBinding.textInputLayout.setVisibility(View.GONE);
             uploadNewsBinding.textInputLayout2.setVisibility(View.GONE);
+            uploadNewsBinding.textInputLayout3.setVisibility(View.GONE);
         } else
             uploadNewsBinding.newsTV.setText(id);
 
@@ -276,6 +279,7 @@ public class MainActivity extends AppCompatActivity {
             if (!id.equals("Upload Category")) {
                 String url = uploadNewsBinding.url.getText().toString().trim();
                 String desc = uploadNewsBinding.desc.getText().toString().trim();
+                String engDesc = uploadNewsBinding.engDesc.getText().toString().trim();
                 boolean breakingNews = uploadNewsBinding.breakingNews.isChecked();
                 boolean trendingNews = uploadNewsBinding.trendingNews.isChecked();
                 boolean gadgetNews = uploadNewsBinding.gadgets.isChecked();
@@ -294,6 +298,10 @@ public class MainActivity extends AppCompatActivity {
                     uploadNewsBinding.desc.setError("desc Required");
                     uploadNewsBinding.desc.requestFocus();
                     loadingDialog.dismiss();
+                } else if (TextUtils.isEmpty(engDesc)) {
+                    uploadNewsBinding.engDesc.setError("desc Required");
+                    uploadNewsBinding.engDesc.requestFocus();
+                    loadingDialog.dismiss();
                 } else {
                     if (trendingNews) {
                         map.put("tableName", "trending_news");
@@ -306,6 +314,7 @@ public class MainActivity extends AppCompatActivity {
                     map.put("title", title);
                     map.put("url", url);
                     map.put("desc", desc);
+                    map.put("engDesc", engDesc);
                     map.put("date", formattedDate);
                     map.put("time", selectTime);
 

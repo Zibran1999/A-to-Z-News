@@ -164,13 +164,42 @@
             android:textColorHint="@color/black"
             app:boxStrokeColor="@color/black"
             app:endIconMode="clear_text"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textInputLayout">
 
             <EditText
                 android:id="@+id/desc"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:cursorVisible="true"
+                android:focusable="true"
+                android:gravity="start"
+                android:inputType="textMultiLine|textLongMessage"
+                android:minWidth="390dp"
+                android:minHeight="200dp"
+                android:scrollbars="vertical"
+                android:textColor="@color/black"
+                tools:ignore="Autofill,LabelFor" />
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayout3"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:hint="@string/enter_english_description"
+            android:textColorHint="@color/black"
+            app:boxStrokeColor="@color/black"
+            app:endIconMode="clear_text"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayout2">
+
+            <EditText
+                android:id="@+id/eng_desc"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:clickable="true"

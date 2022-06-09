@@ -15,6 +15,8 @@ public class NewsModel {
     private String url;
     @SerializedName("desc")
     private String desc;
+    @SerializedName("engDesc")
+    private String engDesc;
     @SerializedName("date")
     private String date;
     @SerializedName("time")
@@ -45,6 +47,10 @@ public class NewsModel {
         return desc;
     }
 
+    public String getEngDesc() {
+        return engDesc;
+    }
+
     public String getDate() {
         return date;
     }
@@ -52,4 +58,6 @@ public class NewsModel {
     public String getTime() {
         return time;
     }
+
+
 }

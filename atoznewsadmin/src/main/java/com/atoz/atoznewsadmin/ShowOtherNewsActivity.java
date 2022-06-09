@@ -89,7 +89,8 @@ public class ShowOtherNewsActivity extends AppCompatActivity implements NewsAdap
                     final InputStream inputStream = getContentResolver().openInputStream(result);
                     final Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
                     uploadNewsBinding.choseNewsImg.setImageBitmap(bitmap);
-                    encodedImg = imageStore(bitmap);
+                    if (bitmap != null)
+                        encodedImg = imageStore(bitmap);
 
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
@@ -205,6 +206,7 @@ public class ShowOtherNewsActivity extends AppCompatActivity implements NewsAdap
         uploadNewsBinding.titleTv.setText(HtmlCompat.fromHtml(newsModel.getTitle(), HtmlCompat.FROM_HTML_MODE_LEGACY));
         uploadNewsBinding.url.setText(newsModel.getUrl());
         uploadNewsBinding.desc.setText(HtmlCompat.fromHtml(newsModel.getDesc(), HtmlCompat.FROM_HTML_MODE_LEGACY));
+        uploadNewsBinding.engDesc.setText(HtmlCompat.fromHtml(newsModel.getEngDesc(), HtmlCompat.FROM_HTML_MODE_LEGACY));
         uploadNewsBinding.radioGroup.setVisibility(View.GONE);
         encodedImg = newsModel.getNewsImg();
         uploadNewsBinding.upload.setOnClickListener(view -> {
@@ -228,6 +230,7 @@ public class ShowOtherNewsActivity extends AppCompatActivity implements NewsAdap
             String title = uploadNewsBinding.titleTv.getText().toString().trim();
             String url = uploadNewsBinding.url.getText().toString().trim();
             String desc = uploadNewsBinding.desc.getText().toString().trim();
+            String engDesc = uploadNewsBinding.engDesc.getText().toString().trim();
 
             if (TextUtils.isEmpty(title)) {
                 uploadNewsBinding.titleTv.setError("title Required");
@@ -241,13 +244,18 @@ public class ShowOtherNewsActivity extends AppCompatActivity implements NewsAdap
                 uploadNewsBinding.desc.setError("desc Required");
                 uploadNewsBinding.desc.requestFocus();
                 loadingDialog.dismiss();
-            } else {
+            } else if (TextUtils.isEmpty(engDesc)) {
+                uploadNewsBinding.engDesc.setError("desc Required");
+                uploadNewsBinding.engDesc.requestFocus();
+                loadingDialog.dismiss();
+            }else {
                 if (encodedImg.length() < 100) {
                     map.put("img", encodedImg);
                     map.put("deleteImg", newsModel.getNewsImg());
                     map.put("title", title);
                     map.put("url", url);
                     map.put("desc", desc);
+                    map.put("engDesc", engDesc);
                     map.put("date", formattedDate);
                     map.put("time", selectTime);
                     map.put("id", newsModel.getId());
@@ -260,6 +268,7 @@ public class ShowOtherNewsActivity extends AppCompatActivity implements NewsAdap
                     map.put("title", title);
                     map.put("url", url);
                     map.put("desc", desc);
+                    map.put("engDesc", engDesc);
                     map.put("date", formattedDate);
                     map.put("time", selectTime);
                     map.put("id", newsModel.getId());

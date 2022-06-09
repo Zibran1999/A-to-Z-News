@@ -8,7 +8,7 @@
     <string name="trending_news">Trending</string>
     <string name="enter_title">News Headline</string>
     <string name="enter_url">Enter Url</string>
-    <string name="enter_description">Enter News Description</string>
+    <string name="enter_description">Enter Hindi News</string>
     <string name="todo">TODO</string>
     <string name="native_ads_type">Native Ads Type</string>
     <string name="show_banners">Show Banners</string>
@@ -42,4 +42,5 @@
     <string name="interstitial_url">Interstitial Url</string>
     <string name="upload_ads_ids">Upload Ads Ids</string>
     <string name="show_own_ads">Show Own Ads</string>
+    <string name="enter_english_description">Enter English News</string>
 </resources>
