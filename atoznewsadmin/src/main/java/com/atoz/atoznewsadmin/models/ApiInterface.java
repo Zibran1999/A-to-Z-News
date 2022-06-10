@@ -90,6 +90,7 @@ public interface ApiInterface {
     @FormUrlEncoded
     @POST("updateURLOrTABText.php")
     Call<MessageModel> uploadURLOrTABText(@FieldMap Map<String, String> map);
+
     @FormUrlEncoded
     @POST("fetch_url_or_tabtext.php")
     Call<UrlOrTAbTextModel> fetchURLOrTABText(@Field("id") String id);
