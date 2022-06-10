@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "980965644519",
+    "project_id": "a-to-z-news-60a40",
+    "storage_bucket": "a-to-z-news-60a40.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:980965644519:android:4f0559030ea2809615ea42",
+        "android_client_info": {
+          "package_name": "dailynews.localandglobalnews"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "980965644519-affs0l4jou8jvqa46l757f83m7q8056e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCWn2ig-dPd8qL80YgrIGtPrSrWM1jVSh4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "980965644519-affs0l4jou8jvqa46l757f83m7q8056e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
