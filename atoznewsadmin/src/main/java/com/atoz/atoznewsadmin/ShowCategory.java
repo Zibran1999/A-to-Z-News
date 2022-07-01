@@ -210,6 +210,7 @@ public class ShowCategory extends AppCompatActivity implements CategoryAdapter.C
             uploadNewsBinding.newsTV.setText(id);
             uploadNewsBinding.radioGroup.setVisibility(View.GONE);
             uploadNewsBinding.textInputLayout.setVisibility(View.GONE);
+            uploadNewsBinding.textInput.setVisibility(View.GONE);
             uploadNewsBinding.textInputLayout2.setVisibility(View.GONE);
             uploadNewsBinding.textInputLayout3.setVisibility(View.GONE);
 
@@ -248,6 +249,8 @@ public class ShowCategory extends AppCompatActivity implements CategoryAdapter.C
                 String url = uploadNewsBinding.url.getText().toString().trim();
                 String desc = uploadNewsBinding.desc.getText().toString().trim();
                 String engDesc = uploadNewsBinding.engDesc.getText().toString().trim();
+                String engTitle = uploadNewsBinding.titleEngTv.getText().toString().trim();
+
 
 
                 if (encodedImg == null) {
@@ -257,7 +260,11 @@ public class ShowCategory extends AppCompatActivity implements CategoryAdapter.C
                     uploadNewsBinding.titleTv.setError("title Required");
                     uploadNewsBinding.titleTv.requestFocus();
                     loadingDialog.dismiss();
-                } else if (TextUtils.isEmpty(url)) {
+                } else if (TextUtils.isEmpty(engTitle)) {
+                    uploadNewsBinding.titleEngTv.setError("title Required");
+                    uploadNewsBinding.titleEngTv.requestFocus();
+                    loadingDialog.dismiss();
+                }else if (TextUtils.isEmpty(url)) {
                     uploadNewsBinding.url.setError("Url Required");
                     uploadNewsBinding.url.requestFocus();
                     loadingDialog.dismiss();
@@ -272,6 +279,7 @@ public class ShowCategory extends AppCompatActivity implements CategoryAdapter.C
                 } else {
                     map.put("img", encodedImg);
                     map.put("title", title);
+                    map.put("engTitle", engTitle);
                     map.put("url", url);
                     map.put("desc", desc);
                     map.put("engDesc", engDesc);

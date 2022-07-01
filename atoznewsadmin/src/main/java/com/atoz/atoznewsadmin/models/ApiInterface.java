@@ -17,14 +17,6 @@ public interface ApiInterface {
 
 
     @FormUrlEncoded
-    @POST("ads_fetch.php")
-    Call<List<AdsModel>> fetchAds(@Field("id") String id);
-
-    @FormUrlEncoded
-    @POST("ads_update.php")
-    Call<MessageModel> updateAdIds(@FieldMap Map<String, String> map);
-
-    @FormUrlEncoded
     @POST("upload_news.php")
     Call<MessageModel> uploadNews(@FieldMap Map<String, String> map);
 
@@ -37,6 +29,10 @@ public interface ApiInterface {
     Call<MessageModel> uploadNewsCategory(@FieldMap Map<String, String> map);
 
     @FormUrlEncoded
+    @POST("upload_quiz_category.php")
+    Call<MessageModel> uploadQuizCategory(@FieldMap Map<String, String> map);
+
+    @FormUrlEncoded
     @POST("update_news_category.php")
     Call<MessageModel> updateNewsCategory(@FieldMap Map<String, String> map);
 
@@ -47,6 +43,14 @@ public interface ApiInterface {
     @FormUrlEncoded
     @POST("fetch_categories.php")
     Call<List<CatModel>> fetchCategory(@Field("id") String id);
+
+
+    @POST("fetch_quiz_categories.php")
+    Call<List<CatModel>> fetchQuizCategory();
+
+    @FormUrlEncoded
+    @POST("update_quiz_category.php")
+    Call<MessageModel> updateQuizCategory(@FieldMap Map<String, String> map);
 
     @FormUrlEncoded
     @POST("fetch_cat_news.php")
@@ -61,17 +65,37 @@ public interface ApiInterface {
     Call<MessageModel> deleteCategory(@FieldMap Map<String, String> map);
 
     @FormUrlEncoded
+    @POST("delete_quiz_category.php")
+    Call<MessageModel> deleteQuizCategory(@FieldMap Map<String, String> map);
+
+    @FormUrlEncoded
     @POST("delete_news.php")
     Call<MessageModel> deleteCatNews(@FieldMap Map<String, String> map);
+
     @FormUrlEncoded
     @POST("delete_other_news.php")
     Call<MessageModel> deleteNews(@FieldMap Map<String, String> map);
- @FormUrlEncoded
+
+    @FormUrlEncoded
     @POST("update_cat_news.php")
     Call<MessageModel> updateCatNews(@FieldMap Map<String, String> map);
- @FormUrlEncoded
+
+    @FormUrlEncoded
     @POST("update_news.php")
     Call<MessageModel> updateNews(@FieldMap Map<String, String> map);
+
+    @FormUrlEncoded
+    @POST("updateURLOrTABText.php")
+    Call<MessageModel> uploadURLOrTABText(@FieldMap Map<String, String> map);
+
+    @FormUrlEncoded
+    @POST("ads_fetch.php")
+    Call<List<AdsModel>> fetchAds(@Field("id") String id);
+
+    @FormUrlEncoded
+    @POST("ads_update.php")
+    Call<MessageModel> updateAdIds(@FieldMap Map<String, String> map);
+
     @Multipart
     @POST("upload_own_ads.php")
     Call<ResponseBody> uploadOwnAds(@Part MultipartBody.Part bannerPart, @Part MultipartBody.Part nativePart, @Part MultipartBody.Part interstitialPart, @Part MultipartBody.Part banUrlPart, @Part MultipartBody.Part nativeUrlPart, @Part MultipartBody.Part interstitialUrlPart, @Part MultipartBody.Part appIdPart);
@@ -87,11 +111,46 @@ public interface ApiInterface {
     @FormUrlEncoded
     @POST("delete_own_ad.php")
     Call<MessageModel> deleteAd(@FieldMap Map<String, String> map);
+
     @FormUrlEncoded
-    @POST("updateURLOrTABText.php")
-    Call<MessageModel> uploadURLOrTABText(@FieldMap Map<String, String> map);
+    @POST("upload_ads_state.php")
+    Call<MessageModel> uploadAdsState(@Field("adsState") String adsState);
+
+    @POST("fetch_ads_state.php")
+    Call<AdsStateModel> fetchAdsState();
 
     @FormUrlEncoded
     @POST("fetch_url_or_tabtext.php")
     Call<UrlOrTAbTextModel> fetchURLOrTABText(@Field("id") String id);
+
+    @FormUrlEncoded
+    @POST("upload_quiz_questions.php")
+    Call<MessageModel> uploadQuizQuestions(@FieldMap Map<String, String> map);
+
+    @FormUrlEncoded
+    @POST("fetch_quiz_questions.php")
+    Call<QuizModelList> fetchQuizQuestions(@Field("catId") String id);
+
+    @FormUrlEncoded
+    @POST("Delete_quiz_api.php")
+    Call<MessageModel> deleteQuizItems(@FieldMap Map<String, String> map);
+
+    @FormUrlEncoded
+    @POST("update_quiz_api.php")
+    Call<MessageModel> updateQuiz(@FieldMap Map<String, String> map);
+
+
+    @FormUrlEncoded
+    @POST("fetch_banners.php")
+    Call<BannerModelList> fetchBanner(@FieldMap Map<String, String> map);
+
+    @Multipart
+    @POST("update_banner.php")
+    Call<MessageModel> updateBanner(@Part MultipartBody.Part idPart,
+                                    @Part MultipartBody.Part imgPart,
+                                    @Part MultipartBody.Part urlPart,
+                                    @Part MultipartBody.Part deleteImgPart,
+                                    @Part MultipartBody.Part imgKeyPart);
+
+
 }

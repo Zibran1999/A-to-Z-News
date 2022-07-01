@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_margin="10dp"
     android:padding="10dp"
     tools:context=".MainActivity">
@@ -75,26 +76,59 @@
             android:padding="10dp"
             android:text="@string/update_url_amp_text"
             android:textSize="20sp" />
+
         <Button
             android:id="@+id/upload_own_ads"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:padding="10dp"
             android:text="@string/upload_own_ads"
             android:textAllCaps="true"
-            android:textSize="20sp"
-            android:layout_marginBottom="8dp" />
+            android:textSize="20sp" />
 
         <Button
             android:id="@+id/show_own_ads"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:padding="10dp"
             android:text="@string/show_own_ads"
             android:textAllCaps="true"
-            android:textSize="20sp"
-            android:layout_marginBottom="8dp" />
+            android:textSize="20sp" />
 
+        <Button
+            android:id="@+id/upload_quiz_cat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:padding="10dp"
+            android:text="@string/upload_quiz_category"
+            android:textAllCaps="true"
+            android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/show_quiz_cat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:padding="10dp"
+            android:text="@string/show_quiz_category"
+            android:textAllCaps="true"
+            android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/upload_strip_image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="@string/update_banner"
+            android:textAllCaps="true"
+            android:textSize="20sp"
+            android:layout_marginBottom="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/upload_tips" />
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

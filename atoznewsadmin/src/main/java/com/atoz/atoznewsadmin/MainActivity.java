@@ -18,6 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -39,6 +40,8 @@ import com.atoz.atoznewsadmin.databinding.UploadUrlOrTabTextLayoutBinding;
 import com.atoz.atoznewsadmin.models.AdsModel;
 import com.atoz.atoznewsadmin.models.ApiInterface;
 import com.atoz.atoznewsadmin.models.ApiWebServices;
+import com.atoz.atoznewsadmin.models.BannerModel;
+import com.atoz.atoznewsadmin.models.BannerModelList;
 import com.atoz.atoznewsadmin.models.FileUtils;
 import com.atoz.atoznewsadmin.models.MessageModel;
 import com.atoz.atoznewsadmin.models.UrlOrTAbTextModel;
@@ -73,9 +76,9 @@ public class MainActivity extends AppCompatActivity {
 
     ActivityMainBinding binding;
     UploadNewsBinding uploadNewsBinding;
-    Dialog dialog, loadingDialog, adsDialog;
+    Dialog dialog, loadingDialog, adsDialog, bannerDialog;
     ActivityResultLauncher<String> launcher;
-    String encodedImg, formattedDate, selectTime;
+    String encodedImg, encodedImage, formattedDate, selectTime, banTitle, banImg;
     Map<String, String> map = new HashMap<>();
 
     Call<MessageModel> call;
@@ -86,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
     String[] item2 = new String[]{"Native", "MREC"};
     AutoCompleteTextView BannerTopNetworkName, BannerBottomNetworkName, InterstitialNetwork, NativeAdsNetworkName, RewardAdsNetwork, nativeType;
     EditText AppId, AppLovinSdkKey, BannerTop, BannerBottom, InterstitialAds, NativeAds, rewardAds;
-    Button UploadAdsBtn;
+    Button UploadAdsBtn, uploadBannerBtn;
     Dialog loading, adsUpdateDialog, urlOrTabTextLayoutDialog;
     String appId, appLovinSdkKey, bannerTopNetworkName, bannerTop, bannerBottomNetworkName,
             bannerBottom, interstitialNetwork, interstitialAds, nativeAdsNetworkName,
@@ -99,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
     String bannerImage, nativeImage, interstitialImage;
     Uri uri;
     UploadUrlOrTabTextLayoutBinding urlOrTabTextLayoutBinding;
-
+    ImageView bannerImageView;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -171,6 +174,199 @@ public class MainActivity extends AppCompatActivity {
 
 
         });
+
+        binding.uploadQuizCat.setOnClickListener(view -> setUploadQuizDialog("Upload Category"));
+        binding.showQuizCat.setOnClickListener(view -> {
+            Intent intent = new Intent(this, ShowQuizActivity.class);
+            startActivity(intent);
+        });
+        binding.uploadStripImage.setOnClickListener(view -> {
+            map.put("title", "news_banner");
+            updateBannerDialog(map);
+        });
+    }
+
+
+    private void updateBannerDialog(Map<String, String> map) {
+        bannerDialog = new Dialog(MainActivity.this);
+        bannerDialog.setContentView(R.layout.upload_banner_layout);
+        bannerDialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        bannerDialog.setCancelable(false);
+        bannerDialog.show();
+
+        bannerImageView = bannerDialog.findViewById(R.id.selectBannerImage);
+        EditText edBannerUrl = bannerDialog.findViewById(R.id.banner_url);
+        uploadBannerBtn = bannerDialog.findViewById(R.id.upload_banner_btn);
+        Button cancelBtn = bannerDialog.findViewById(R.id.cancel_btn);
+        cancelBtn.setOnClickListener(view -> {
+            bannerDialog.dismiss();
+            encodedImage = "";
+        });
+
+        bannerImageView.setOnClickListener(v -> {
+//            launcher.launch("image/*");
+//            key = "banner";
+            requestPermission();
+            intent = new Intent(Intent.ACTION_GET_CONTENT);
+            intent.setType("image/*");
+            startActivityForResult(intent, 104);
+        });
+
+        Call<BannerModelList> call = apiInterface.fetchBanner(map);
+        call.enqueue(new Callback<BannerModelList>() {
+            @Override
+            public void onResponse(@NonNull Call<BannerModelList> call, @NonNull Response<BannerModelList> response) {
+
+                if (response.isSuccessful()) {
+                    assert response.body() != null;
+                    if (response.body().getData() != null) {
+
+                        for (BannerModel ban : response.body().getData()) {
+                            Glide.with(MainActivity.this).load(ApiWebServices.base_url + "strip_banner_images/" + ban.getImage()).into(bannerImageView);
+                            edBannerUrl.setText(ban.getUrl());
+                            banTitle = ban.getTitle();
+                            banImg = ban.getImage();
+                            encodedImage = banImg;
+                            loadingDialog.dismiss();
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<BannerModelList> call, @NonNull Throwable t) {
+
+            }
+        });
+
+
+        uploadBannerBtn.setOnClickListener(view -> {
+            loadingDialog.show();
+            Log.d("checkEncodedImg", encodedImage + banTitle);
+
+            String url = edBannerUrl.getText().toString().trim();
+
+            if (encodedImage.equals(banImg)) {
+
+                MultipartBody.Part imgPart = MultipartBody.Part.createFormData("img", encodedImage);
+                MultipartBody.Part idPart = MultipartBody.Part.createFormData("title", banTitle);
+                MultipartBody.Part urlPart = MultipartBody.Part.createFormData("url", url);
+                MultipartBody.Part deleteImgPart = MultipartBody.Part.createFormData("deleteImg", banImg);
+                MultipartBody.Part imgKeyPart = MultipartBody.Part.createFormData("imgKey", "0");
+                Call<MessageModel> call1 = apiInterface.updateBanner(imgPart, idPart, urlPart, deleteImgPart, imgKeyPart);
+
+                updateBannerData(call1);
+            } else {
+                File imgFile = new File(Uri.parse(encodedImage).getPath());
+                RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), imgFile);
+
+                MultipartBody.Part imgPart = MultipartBody.Part.createFormData("img", imgFile.getName(), requestBody);
+                MultipartBody.Part idPart = MultipartBody.Part.createFormData("title", banTitle);
+                MultipartBody.Part urlPart = MultipartBody.Part.createFormData("url", url);
+                MultipartBody.Part deleteImgPart = MultipartBody.Part.createFormData("deleteImg", banImg);
+                MultipartBody.Part imgKeyPart = MultipartBody.Part.createFormData("imgKey", "1");
+                Call<MessageModel> call1 = apiInterface.updateBanner(imgPart, idPart, urlPart, deleteImgPart, imgKeyPart);
+                updateBannerData(call1);
+
+
+            }
+        });
+
+
+    }
+
+
+    private void updateBannerData(Call<MessageModel> call) {
+        call.enqueue(new Callback<MessageModel>() {
+            @Override
+            public void onResponse(@NonNull Call<MessageModel> call, @NonNull Response<MessageModel> response) {
+                if (response.isSuccessful()) {
+                    assert response.body() != null;
+                    Toast.makeText(MainActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                    bannerDialog.dismiss();
+                } else {
+                    assert response.body() != null;
+                    Toast.makeText(MainActivity.this, response.message(), Toast.LENGTH_SHORT).show();
+                }
+                loadingDialog.dismiss();
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<MessageModel> call, @NonNull Throwable t) {
+                Toast.makeText(MainActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.d("Check Error", t.getMessage());
+
+                loadingDialog.dismiss();
+            }
+        });
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private void setUploadQuizDialog(String id) {
+        dialog = new Dialog(this);
+        uploadNewsBinding = UploadNewsBinding.inflate(getLayoutInflater());
+        dialog.setContentView(uploadNewsBinding.getRoot());
+        dialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        dialog.getWindow().setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.item_bg));
+        dialog.setCancelable(false);
+        dialog.show();
+        uploadNewsBinding.cancel.setOnClickListener(view -> dialog.dismiss());
+
+        if (id.equals("Upload Category")) {
+            uploadNewsBinding.newsTV.setText(id);
+            uploadNewsBinding.radioGroup.setVisibility(View.GONE);
+            uploadNewsBinding.textInputLayout.setVisibility(View.GONE);
+            uploadNewsBinding.textInput.setVisibility(View.GONE);
+            uploadNewsBinding.textInputLayout2.setVisibility(View.GONE);
+            uploadNewsBinding.textInputLayout3.setVisibility(View.GONE);
+        } else
+            uploadNewsBinding.newsTV.setText(id);
+
+        uploadNewsBinding.choseNewsImg.setOnClickListener(view -> launcher.launch("image/*"));
+
+        uploadNewsBinding.upload.setOnClickListener(view -> {
+            Date c = Calendar.getInstance().getTime();
+            SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault());
+            formattedDate = df.format(c);
+            SimpleDateFormat mdformat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
+            String stime = mdformat.format(c);
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat currentTimeFormate = new SimpleDateFormat("HH:mm");
+            Date currentDate = null;
+            try {
+                currentDate = currentTimeFormate.parse(stime);
+            } catch (ParseException e) {
+
+                e.printStackTrace();
+            }
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat CurrentfmtOut = new SimpleDateFormat("hh:mm aa");
+
+            assert currentDate != null;
+            selectTime = CurrentfmtOut.format(currentDate);
+
+            String title = uploadNewsBinding.titleTv.getText().toString().trim();
+            if (id.equals("Upload Category")) {
+                if (encodedImg == null) {
+                    loadingDialog.dismiss();
+                    Toast.makeText(MainActivity.this, "Please Select an Image", Toast.LENGTH_SHORT).show();
+                } else if (TextUtils.isEmpty(title)) {
+                    uploadNewsBinding.titleTv.setError("title Required");
+                    uploadNewsBinding.titleTv.requestFocus();
+                    loadingDialog.dismiss();
+                } else {
+                    map.put("img", encodedImg);
+                    map.put("title", title);
+                    map.put("date", formattedDate);
+                    map.put("time", selectTime);
+                    call = apiInterface.uploadQuizCategory(map);
+                    uploadData(call, dialog);
+
+                }
+            }
+
+
+        });
+
     }
 
     private void UploadUrlORTABTextDialog(String upload_url) {
@@ -248,6 +444,7 @@ public class MainActivity extends AppCompatActivity {
             uploadNewsBinding.newsTV.setText(id);
             uploadNewsBinding.radioGroup.setVisibility(View.GONE);
             uploadNewsBinding.textInputLayout.setVisibility(View.GONE);
+            uploadNewsBinding.textInput.setVisibility(View.GONE);
             uploadNewsBinding.textInputLayout2.setVisibility(View.GONE);
             uploadNewsBinding.textInputLayout3.setVisibility(View.GONE);
         } else
@@ -277,6 +474,7 @@ public class MainActivity extends AppCompatActivity {
 
             String title = uploadNewsBinding.titleTv.getText().toString().trim();
             if (!id.equals("Upload Category")) {
+                String engTitle = uploadNewsBinding.titleEngTv.getText().toString().trim();
                 String url = uploadNewsBinding.url.getText().toString().trim();
                 String desc = uploadNewsBinding.desc.getText().toString().trim();
                 String engDesc = uploadNewsBinding.engDesc.getText().toString().trim();
@@ -289,6 +487,10 @@ public class MainActivity extends AppCompatActivity {
                 } else if (TextUtils.isEmpty(title)) {
                     uploadNewsBinding.titleTv.setError("title Required");
                     uploadNewsBinding.titleTv.requestFocus();
+                    loadingDialog.dismiss();
+                } else if (TextUtils.isEmpty(engTitle)) {
+                    uploadNewsBinding.titleEngTv.setError("title Required");
+                    uploadNewsBinding.titleEngTv.requestFocus();
                     loadingDialog.dismiss();
                 } else if (TextUtils.isEmpty(url)) {
                     uploadNewsBinding.url.setError("Url Required");
@@ -312,6 +514,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     map.put("img", encodedImg);
                     map.put("title", title);
+                    map.put("engTitle", engTitle);
                     map.put("url", url);
                     map.put("desc", desc);
                     map.put("engDesc", engDesc);
@@ -757,6 +960,10 @@ public class MainActivity extends AppCompatActivity {
                     uploadAdsDialogBinding.videoView.setOnPreparedListener(() -> uploadAdsDialogBinding.videoView.start());
                     break;
             }
+        } else if (requestCode == 104 && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            uri = data.getData();
+            encodedImage = FileUtils.getPath(this, uri);
+            Glide.with(this).load(uri).into(bannerImageView);
         }
 
 

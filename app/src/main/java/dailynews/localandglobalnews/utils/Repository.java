@@ -1,11 +1,15 @@
 package dailynews.localandglobalnews.utils;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import java.util.List;
 
 import dailynews.localandglobalnews.models.BreakingNews.NewsModel;
+import dailynews.localandglobalnews.models.QuizModelList;
 import dailynews.localandglobalnews.models.category.CatModel;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -13,11 +17,12 @@ import retrofit2.Response;
 
 public class Repository {
     public static Repository repository;
+    private final MutableLiveData<QuizModelList> quizModelListMutableLiveData = new MutableLiveData<>();
     ApiInterface apiInterface;
-
     MutableLiveData<List<NewsModel>> breakingNewsModelMutableLiveData = new MutableLiveData<>();
     MutableLiveData<List<NewsModel>> trendingNewsModelMutableLiveData = new MutableLiveData<>();
     MutableLiveData<List<CatModel>> catModelMutableLiveData = new MutableLiveData<>();
+    MutableLiveData<List<CatModel>> quizCatModelMutableLiveData = new MutableLiveData<>();
     MutableLiveData<List<NewsModel>> otherNewsMutableLiveData = new MutableLiveData<>();
     MutableLiveData<List<NewsModel>> catNewsItemMutableLiveData = new MutableLiveData<>();
 
@@ -67,6 +72,7 @@ public class Repository {
         });
         return trendingNewsModelMutableLiveData;
     }
+
     public MutableLiveData<List<CatModel>> getCatModelMutableLiveData(String id) {
         Call<List<CatModel>> call = apiInterface.fetchCategory(id);
         call.enqueue(new Callback<List<CatModel>>() {
@@ -83,6 +89,24 @@ public class Repository {
             }
         });
         return catModelMutableLiveData;
+    }
+
+    public MutableLiveData<List<CatModel>> getQuizCatModelMutableLiveData() {
+        Call<List<CatModel>> call = apiInterface.fetchQuizCategory();
+        call.enqueue(new Callback<List<CatModel>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<CatModel>> call, @NonNull Response<List<CatModel>> response) {
+                if (response.isSuccessful()) {
+                    quizCatModelMutableLiveData.setValue(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<CatModel>> call, @NonNull Throwable t) {
+
+            }
+        });
+        return quizCatModelMutableLiveData;
     }
 
     public MutableLiveData<List<NewsModel>> getOtherNewsMutableLiveData(String id) {
@@ -104,12 +128,15 @@ public class Repository {
     }
 
     public MutableLiveData<List<NewsModel>> getCatNewsItemMutableLiveData(String id) {
+        Log.d("contentValueId", id != null ? id : "null");
         Call<List<NewsModel>> call = apiInterface.fetchCatNewsItem(id);
         call.enqueue(new Callback<List<NewsModel>>() {
             @Override
             public void onResponse(@NonNull Call<List<NewsModel>> call, @NonNull Response<List<NewsModel>> response) {
                 if (response.isSuccessful()) {
                     catNewsItemMutableLiveData.setValue(response.body());
+                    Log.d("contentValueId", catModelMutableLiveData.getValue().get(0).getTitle() != null ? catModelMutableLiveData.getValue().get(0).getTitle() : "null");
+
                 }
             }
 
@@ -120,4 +147,28 @@ public class Repository {
         });
         return catNewsItemMutableLiveData;
     }
+
+    public LiveData<QuizModelList> getQuizQuestions(String id) {
+        Call<QuizModelList> call = apiInterface.fetchQuizQuestions(id);
+        call.enqueue(new Callback<QuizModelList>() {
+            @Override
+            public void onResponse(@NonNull Call<QuizModelList> call, @NonNull Response<QuizModelList> response) {
+                if (response.isSuccessful()) {
+                    quizModelListMutableLiveData.setValue(response.body());
+                } else {
+                    Log.d("onResponse", response.message());
+
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<QuizModelList> call, @NonNull Throwable t) {
+                Log.d("onResponse error", t.getMessage());
+
+            }
+        });
+
+        return quizModelListMutableLiveData;
+    }
+
 }

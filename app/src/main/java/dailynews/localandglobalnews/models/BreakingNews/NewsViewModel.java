@@ -23,4 +23,5 @@ public class NewsViewModel  extends AndroidViewModel {
     public LiveData<List<NewsModel>> getAllNews(){
         return repository.getNewsModelMutableLiveData(id);
     }
+
 }

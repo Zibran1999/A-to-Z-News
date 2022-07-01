@@ -15,14 +15,10 @@ import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 import com.facebook.shimmer.Shimmer;
 import com.facebook.shimmer.ShimmerDrawable;
 
-import java.io.UnsupportedEncodingException;
-
 import dailynews.localandglobalnews.BuildConfig;
 import dailynews.localandglobalnews.R;
 
 public class CommonMethods {
-    static String adsFreeText;
-
     public static Dialog getLoadingDialog(Context context) {
         Dialog loadingDialog;
         loadingDialog = new Dialog(context);
@@ -53,7 +49,7 @@ public class CommonMethods {
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
             shareIntent.setType("text/plain");
             shareIntent.putExtra(Intent.EXTRA_SUBJECT, R.string.app_name);
-            String shareMessage = share+"\n\n";
+            String shareMessage = share + "\n\n";
             shareMessage = shareMessage + "https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID + "\n\n";
             shareIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
@@ -96,7 +92,7 @@ public class CommonMethods {
 
     }
 
-    public static CircularProgressDrawable CircularDrawable(Context context){
+    public static CircularProgressDrawable CircularDrawable(Context context) {
         CircularProgressDrawable circularProgressDrawable = new CircularProgressDrawable(context);
         circularProgressDrawable.setStrokeWidth(5f);
         circularProgressDrawable.setCenterRadius(30f);
@@ -104,10 +100,10 @@ public class CommonMethods {
         return circularProgressDrawable;
     }
 
-    public static void whatsApp(Context context,String whatsapp) throws UnsupportedEncodingException, PackageManager.NameNotFoundException {
+    public static void whatsApp(Context context, String whatsapp) throws PackageManager.NameNotFoundException {
         String contact = "+91 6396869782"; // use country code with your phone number
         String url = "https://api.whatsapp.com/send?phone=" + contact + "&text=" +
-                whatsapp ;
+                whatsapp;
         try {
             PackageManager pm = context.getPackageManager();
             pm.getPackageInfo("com.whatsapp", PackageManager.GET_ACTIVITIES);
@@ -135,5 +131,34 @@ public class CommonMethods {
 
 
     }
+
+//    public static String setTranslateText(String text) {
+    // Create an English-German translator:
+//        TranslatorOptions options =
+//                new TranslatorOptions.Builder()
+//                        .setSourceLanguage(TranslateLanguage.ENGLISH)
+//                        .setTargetLanguage(TranslateLanguage.HINDI)
+//                        .build();
+//        final Translator englishGermanTranslator =
+//                Translation.getClient(options);
+//
+//        DownloadConditions conditions = new DownloadConditions.Builder()
+//                .requireWifi()
+//                .build();
+//        englishGermanTranslator.downloadModelIfNeeded(conditions)
+//                .addOnSuccessListener(unused -> {
+//
+//                }).addOnFailureListener(e -> {
+//
+//                });
+//        englishGermanTranslator.translate(text)
+//                .addOnSuccessListener(s -> translatedText = text
+//                ).addOnFailureListener(e -> {
+//
+//                });
+//        return translatedText;
+
+//    }
+
 
 }

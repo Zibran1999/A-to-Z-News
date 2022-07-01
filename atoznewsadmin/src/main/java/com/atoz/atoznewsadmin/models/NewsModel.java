@@ -11,6 +11,8 @@ public class NewsModel {
     private String newsImg;
     @SerializedName("title")
     private String title;
+    @SerializedName("engTitle")
+    private String engTitle;
     @SerializedName("url")
     private String url;
     @SerializedName("desc")
@@ -59,5 +61,7 @@ public class NewsModel {
         return time;
     }
 
-
+    public String getEngTitle() {
+        return engTitle;
+    }
 }

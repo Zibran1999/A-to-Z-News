@@ -4,9 +4,9 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:elevation="4dp"
+    android:elevation="8dp"
     android:background="@drawable/item_bg"
-    android:backgroundTint="#2962FF"
+    android:backgroundTint="@color/purple_700"
     android:padding="8dp">
 
     <ProgressBar

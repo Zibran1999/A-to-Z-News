@@ -49,10 +49,10 @@
             android:layout_height="25dp"
             android:layout_marginEnd="16dp"
             android:contentDescription="@string/todo"
+            android:src="@drawable/gmail"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:src="@drawable/gmail" />
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -62,17 +62,10 @@
         android:layout_height="wrap_content"
         android:layout_margin="3dp"
         android:padding="4dp"
-        app:checkedButton="@+id/hindiPreview"
+        app:checkedButton="@+id/englishPreview"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
+        app:layout_constraintTop_toBottomOf="@+id/adView_top"
         app:singleSelection="true">
-
-        <Button
-            android:id="@+id/hindiPreview"
-            style="@style/Widget.App.Button.OutlinedButton.IconOnly"
-            android:layout_width="80dp"
-            android:layout_height="30dp"
-            android:text="@string/hin" />
 
         <Button
             android:id="@+id/englishPreview"
@@ -80,6 +73,13 @@
             android:layout_width="80dp"
             android:layout_height="30dp"
             android:text="@string/eng" />
+
+        <Button
+            android:id="@+id/hindiPreview"
+            style="@style/Widget.App.Button.OutlinedButton.IconOnly"
+            android:layout_width="80dp"
+            android:layout_height="30dp"
+            android:text="@string/hin" />
 
     </com.google.android.material.button.MaterialButtonToggleGroup>
 
@@ -113,7 +113,7 @@
                     <ImageView
                         android:id="@+id/news_details_imageView"
                         android:layout_width="0dp"
-                        android:layout_height="160dp"
+                        android:layout_height="150dp"
                         android:contentDescription="@string/todo"
                         android:scaleType="centerCrop"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -131,7 +131,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:padding="5dp"
-                android:text="This is the title of the news"
                 android:textColor="@color/black"
                 android:textSize="18sp"
                 android:textStyle="bold"
@@ -161,19 +160,20 @@
         android:layout_height="56dp"
         android:layout_marginStart="10sp"
         android:layout_marginEnd="10dp"
+        android:backgroundTint="@color/btn_color"
         android:text="Read More"
         android:textAllCaps="false"
         android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/adView_bottom"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="56dp"
         android:layout_height="50dp"
+        android:layout_marginTop="65dp"
         android:layout_marginEnd="-5dp"
         app:cardCornerRadius="4dp"
-        android:layout_marginTop="65dp"
         app:cardElevation="3dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -182,8 +182,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:background="@color/purple_500">
+            android:background="@color/purple_500"
+            android:gravity="center_vertical">
 
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/whatsapp_share"
@@ -199,5 +199,27 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.card.MaterialCardView>
+
+    <RelativeLayout
+        android:id="@+id/adView_top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:gravity="center"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
+
+    <RelativeLayout
+        android:id="@+id/adView_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:gravity="center"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
