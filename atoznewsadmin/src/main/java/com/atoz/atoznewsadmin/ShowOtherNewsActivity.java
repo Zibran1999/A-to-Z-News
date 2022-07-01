@@ -204,6 +204,7 @@ public class ShowOtherNewsActivity extends AppCompatActivity implements NewsAdap
 
         uploadNewsBinding.choseNewsImg.setOnClickListener(view -> launcher.launch("image/*"));
         uploadNewsBinding.titleTv.setText(HtmlCompat.fromHtml(newsModel.getTitle(), HtmlCompat.FROM_HTML_MODE_LEGACY));
+        uploadNewsBinding.titleEngTv.setText(HtmlCompat.fromHtml(newsModel.getEngTitle(), HtmlCompat.FROM_HTML_MODE_LEGACY));
         uploadNewsBinding.url.setText(newsModel.getUrl());
         uploadNewsBinding.desc.setText(HtmlCompat.fromHtml(newsModel.getDesc(), HtmlCompat.FROM_HTML_MODE_LEGACY));
         uploadNewsBinding.engDesc.setText(HtmlCompat.fromHtml(newsModel.getEngDesc(), HtmlCompat.FROM_HTML_MODE_LEGACY));
@@ -228,6 +229,7 @@ public class ShowOtherNewsActivity extends AppCompatActivity implements NewsAdap
             assert currentDate != null;
             selectTime = CurrentfmtOut.format(currentDate);
             String title = uploadNewsBinding.titleTv.getText().toString().trim();
+            String engTitle = uploadNewsBinding.titleEngTv.getText().toString().trim();
             String url = uploadNewsBinding.url.getText().toString().trim();
             String desc = uploadNewsBinding.desc.getText().toString().trim();
             String engDesc = uploadNewsBinding.engDesc.getText().toString().trim();
@@ -235,6 +237,10 @@ public class ShowOtherNewsActivity extends AppCompatActivity implements NewsAdap
             if (TextUtils.isEmpty(title)) {
                 uploadNewsBinding.titleTv.setError("title Required");
                 uploadNewsBinding.titleTv.requestFocus();
+                loadingDialog.dismiss();
+            } else if (TextUtils.isEmpty(engTitle)) {
+                uploadNewsBinding.titleEngTv.setError("title Required");
+                uploadNewsBinding.titleEngTv.requestFocus();
                 loadingDialog.dismiss();
             } else if (TextUtils.isEmpty(url)) {
                 uploadNewsBinding.url.setError("Url Required");
@@ -248,11 +254,12 @@ public class ShowOtherNewsActivity extends AppCompatActivity implements NewsAdap
                 uploadNewsBinding.engDesc.setError("desc Required");
                 uploadNewsBinding.engDesc.requestFocus();
                 loadingDialog.dismiss();
-            }else {
+            } else {
                 if (encodedImg.length() < 100) {
                     map.put("img", encodedImg);
                     map.put("deleteImg", newsModel.getNewsImg());
                     map.put("title", title);
+                    map.put("engTitle", engTitle);
                     map.put("url", url);
                     map.put("desc", desc);
                     map.put("engDesc", engDesc);
@@ -266,6 +273,7 @@ public class ShowOtherNewsActivity extends AppCompatActivity implements NewsAdap
                     map.put("img", encodedImg);
                     map.put("deleteImg", newsModel.getNewsImg());
                     map.put("title", title);
+                    map.put("engTitle", engTitle);
                     map.put("url", url);
                     map.put("desc", desc);
                     map.put("engDesc", engDesc);

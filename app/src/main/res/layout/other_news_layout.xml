@@ -57,7 +57,7 @@
         android:layout_marginStart="16sp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:textSize="16sp"
+        android:textSize="17sp"
         android:text="Our new stadium is ready for the show!"
         android:textStyle="bold"
         android:textColor="@color/black"

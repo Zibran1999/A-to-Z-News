@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.atoz.atoznewsadmin.adapters.OwnAdsAdapter;
 import com.atoz.atoznewsadmin.databinding.ActivityShowOwnAdsBinding;
 import com.atoz.atoznewsadmin.databinding.UploadAdsDialogBinding;
+import com.atoz.atoznewsadmin.models.AdsStateModel;
 import com.atoz.atoznewsadmin.models.ApiInterface;
 import com.atoz.atoznewsadmin.models.ApiWebServices;
 import com.atoz.atoznewsadmin.models.FileUtils;
@@ -64,6 +65,8 @@ public class ShowOwnAdsActivity extends AppCompatActivity implements OwnAdsAdapt
     Map<String, String> map = new HashMap<>();
     Call<MessageModel> call;
 
+    boolean checkSwitch = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,7 +88,55 @@ public class ShowOwnAdsActivity extends AppCompatActivity implements OwnAdsAdapt
         ownAdsModelView = new ViewModelProvider(this, new OwnAdsModelFactory(this.getApplication(), "PM Kisan All Yojana")).get(OwnAdsModelView.class);
 
         //**Loading Dialog****/
+
         fetchOwnAds();
+        checkSwitch();
+
+    }
+
+    private void checkSwitch() {
+        Call<AdsStateModel> stateModelCall = apiInterface.fetchAdsState();
+        stateModelCall.enqueue(new Callback<AdsStateModel>() {
+            @Override
+            public void onResponse(@NonNull Call<AdsStateModel> call, @NonNull Response<AdsStateModel> response) {
+                Log.d("ContentValue", Objects.requireNonNull(response.body()).getAds_turn_on_or_off());
+                checkSwitch = Boolean.parseBoolean(response.body().getAds_turn_on_or_off());
+                if (checkSwitch) {
+                    binding.switchButton.setText("Ads ON");
+                } else {
+                    binding.switchButton.setText(R.string.ads_off);
+                }
+                binding.switchButton.setChecked(checkSwitch);
+
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<AdsStateModel> call, @NonNull Throwable t) {
+                Log.d("ContentValueError", t.getMessage());
+
+            }
+        });
+
+        binding.switchButton.setOnClickListener(view -> {
+            checkSwitch = binding.switchButton.isChecked();
+            if (checkSwitch) {
+                binding.switchButton.setText("Ads ON");
+            } else
+                binding.switchButton.setText(R.string.ads_off);
+
+            Call<MessageModel> modelCall = apiInterface.uploadAdsState(String.valueOf(binding.switchButton.isChecked()));
+            modelCall.enqueue(new Callback<MessageModel>() {
+                @Override
+                public void onResponse(@NonNull Call<MessageModel> call, @NonNull Response<MessageModel> response) {
+                    Log.d("ContentValue", Objects.requireNonNull(response.body()).getMessage());
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<MessageModel> call, @NonNull Throwable t) {
+                    Log.d("ContentValueError", t.getMessage());
+                }
+            });
+        });
 
     }
 

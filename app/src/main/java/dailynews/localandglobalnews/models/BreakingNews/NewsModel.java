@@ -13,6 +13,8 @@ public class NewsModel implements Serializable {
     private String newsImg;
     @SerializedName("title")
     private String title;
+    @SerializedName("engTitle")
+    private String engTitle;
     @SerializedName("url")
     private String url;
     @SerializedName("desc")
@@ -61,5 +63,9 @@ public class NewsModel implements Serializable {
 
     public String getTime() {
         return time;
+    }
+
+    public String getEngTitle() {
+        return engTitle;
     }
 }

@@ -8,7 +8,7 @@ import androidx.lifecycle.LiveData;
 
 import java.util.List;
 
-import dailynews.localandglobalnews.models.BreakingNews.NewsModel;
+import dailynews.localandglobalnews.models.QuizModelList;
 import dailynews.localandglobalnews.utils.Repository;
 
 public class CatViewModel extends AndroidViewModel {
@@ -21,7 +21,20 @@ public class CatViewModel extends AndroidViewModel {
         this.id = id;
     }
 
-    public LiveData<List<CatModel>> getCategories(){
+    public CatViewModel(@NonNull Application application) {
+        super(application);
+        repository = Repository.getInstance();
+    }
+
+    public LiveData<List<CatModel>> getCategories() {
         return repository.getCatModelMutableLiveData(id);
     }
+
+    public LiveData<List<CatModel>> getQuizCategories() {
+        return repository.getQuizCatModelMutableLiveData();
+    }
+    public LiveData<QuizModelList> getQuizQuestions() {
+        return repository.getQuizQuestions(id);
+    }
+
 }

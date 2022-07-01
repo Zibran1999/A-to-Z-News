@@ -2,14 +2,13 @@ package dailynews.localandglobalnews.activities;
 
 import static androidx.fragment.app.FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT;
 
-import static dailynews.localandglobalnews.activities.StartActivity.tabText;
-
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
@@ -17,6 +16,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,6 +33,9 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.ironsource.mediationsdk.IronSource;
+
+import java.util.Objects;
 
 import dailynews.localandglobalnews.R;
 import dailynews.localandglobalnews.activities.ui.main.SectionsPagerAdapter;
@@ -45,6 +48,9 @@ import dailynews.localandglobalnews.utils.ApiInterface;
 import dailynews.localandglobalnews.utils.ApiWebServices;
 import dailynews.localandglobalnews.utils.CommonMethods;
 import dailynews.localandglobalnews.utils.MyReceiver;
+import dailynews.localandglobalnews.utils.Prevalent;
+import dailynews.localandglobalnews.utils.ShowAds;
+import io.paperdb.Paper;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -52,6 +58,7 @@ import retrofit2.Response;
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     public static final String BroadCastStringForAction = "checkingInternet";
     private static final float END_SCALE = 0.7f;
+    public String tabText;
     int count = 1;
     ImageView navMenu;
     DrawerLayout drawerLayout;
@@ -62,8 +69,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     String siteUrl;
     ApiInterface apiInterface;
     FirebaseAnalytics mFirebaseAnalytics;
-    private IntentFilter intentFilter;
-    private SectionsPagerAdapter sectionsPagerAdapter;
+    ShowAds showAds = new ShowAds();
+    String action;
+    SharedPreferences preferences;
 
     public BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
@@ -79,18 +87,41 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             }
         }
     };
+
+    private IntentFilter intentFilter;
     private Bundle bundle;
 
     private void Set_Visibility_ON() {
+        fetchTabText();
         binding.tvNotConnected.setVisibility(View.GONE);
         binding.viewPager.setVisibility(View.VISIBLE);
         binding.tabs.setVisibility(View.VISIBLE);
         enableNavItems();
+        if (count==2) {
+            if (action != null) {
+                Log.d("ContentValueForPref", action);
+                switch (action) {
+                    case "home":
+                        binding.viewPager.setCurrentItem(0);
+                        action = null;
+                        break;
+                    case "cat":
+                        binding.viewPager.setCurrentItem(1);
+                        action = null;
 
-//        Toast.makeText(this, "hello "+ count, Toast.LENGTH_SHORT).show();
-//        if (count == 1) {
-//
-//        }
+                        break;
+                    case "gad":
+                        binding.viewPager.setCurrentItem(2);
+                        action = null;
+                        break;
+                    default:
+                }
+
+            }
+            if (tabText != null) {
+                Objects.requireNonNull(binding.tabs.getTabAt(1)).setText(tabText);
+            }
+        }
     }
 
     private void Set_Visibility_OFF() {
@@ -109,9 +140,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         navigationView = binding.navigation;
         navMenu = binding.navMenu;
         drawerLayout = binding.drawerLayout;
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
         bundle = new Bundle();
+        action = getIntent().getStringExtra("action");
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         fetchUrl();
+
+        showAds.showInterstitialAds(this);
 
         // Setting Version Code
         try {
@@ -132,15 +167,22 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         } else {
             Set_Visibility_OFF();
         }
+        binding.lottieMail.setOnClickListener(v -> {
+            CommonMethods.contactUs(this);
+            bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Contact With Gmail");
+            mFirebaseAnalytics.logEvent("Clicked_On_content_home_gmail_icon", bundle);
 
-        sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+        });
+        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         sectionsPagerAdapter.addFragments(new HomeFragment(), "Home");
-        sectionsPagerAdapter.addFragments(new CategoryFragment(), "Category");
-        sectionsPagerAdapter.addFragments(new GadgetsFragment(), tabText);
+        sectionsPagerAdapter.addFragments(new GadgetsFragment(), "Gadgets");
+        sectionsPagerAdapter.addFragments(new CategoryFragment(), "Quiz");
 
         navigationDrawer();
         binding.viewPager.setAdapter(sectionsPagerAdapter);
         binding.tabs.setupWithViewPager(binding.viewPager);
+        binding.viewPager.setOffscreenPageLimit(3);
+
     }
 
     private void fetchUrl() {
@@ -266,6 +308,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.nav_home:
+                bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Home Menu");
+                mFirebaseAnalytics.logEvent("Clicked_On_home_menu", bundle);
                 startActivity(new Intent(getApplicationContext(), HomeActivity.class));
                 overridePendingTransition(0, 0);
                 finish();
@@ -275,7 +319,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_visit:
                 bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Visit Site");
                 mFirebaseAnalytics.logEvent("Clicked_Visit_Site", bundle);
-                openWebPage(siteUrl,HomeActivity.this);
+                openWebPage(siteUrl, HomeActivity.this);
                 break;
             case R.id.nav_share:
                 bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Share Menu");
@@ -331,21 +375,83 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onPause() {
         super.onPause();
+        showAds.destroyBanner();
+        IronSource.onPause(this);
         unregisterReceiver(receiver);
     }
 
     @Override
     protected void onResume() {
+        if (Objects.requireNonNull(Paper.book().read(Prevalent.bannerTopNetworkName)).equals("IronSourceWithMeta")) {
+            showAds.showTopBanner(this, binding.adViewTop);
+        } else if (Objects.requireNonNull(Paper.book().read(Prevalent.bannerBottomNetworkName)).equals("IronSourceWithMeta")) {
+            showAds.showBottomBanner(this, binding.adViewBottom);
+        }
         super.onResume();
+        IronSource.onResume(this);
         registerReceiver(receiver, intentFilter);
     }
+
     @Override
     public void onBackPressed() {
-        if (drawerLayout.isDrawerVisible(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START);
-        } else {
+
+        Log.d("ContentValue",preferences.getString("action",""));
+
+        if (preferences.getString("action", "").equals("")) {
             super.onBackPressed();
-            startActivity(new Intent(HomeActivity.this, StartActivity.class));
+            if (drawerLayout.isDrawerVisible(GravityCompat.START)) {
+                drawerLayout.closeDrawer(GravityCompat.START);
+            } else {
+                super.onBackPressed();
+                Intent intent = new Intent(HomeActivity.this, StartActivity.class);
+                intent.putExtra("key", "inter");
+                startActivity(intent);
+                preferences.edit().clear().apply();
+                overridePendingTransition(0, 0);
+                finish();
+                overridePendingTransition(0, 0);
+
+                showAds.destroyBanner();
+            }
+        } else {
+
+            if (drawerLayout.isDrawerVisible(GravityCompat.START)) {
+                drawerLayout.closeDrawer(GravityCompat.START);
+            } else {
+                super.onBackPressed();
+                Intent intent = new Intent(HomeActivity.this, StartActivity.class);
+                intent.putExtra("key", "inter");
+                startActivity(intent);
+                preferences.edit().clear().apply();
+                overridePendingTransition(0, 0);
+                finish();
+                overridePendingTransition(0, 0);
+
+                showAds.destroyBanner();
+            }
+
         }
     }
+
+    private void fetchTabText() {
+
+        Call<UrlOrTAbTextModel> call = apiInterface.fetchURLOrTABText("tab_text");
+        call.enqueue(new Callback<UrlOrTAbTextModel>() {
+            @Override
+            public void onResponse(@NonNull Call<UrlOrTAbTextModel> call, @NonNull Response<UrlOrTAbTextModel> response) {
+                if (response.isSuccessful()) {
+                    assert response.body() != null;
+                    tabText = response.body().getUrl();
+                    Log.d("tabText", tabText);
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<UrlOrTAbTextModel> call, @NonNull Throwable t) {
+                Log.d("contentError", t.getMessage());
+            }
+        });
+
+    }
+
 }

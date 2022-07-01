@@ -68,41 +68,40 @@
             app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
 
 
-            <RadioGroup
-                android:id="@+id/radioGroup"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="10dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/choseNewsImg">
+        <RadioGroup
+            android:id="@+id/radioGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/choseNewsImg">
 
             <com.google.android.material.radiobutton.MaterialRadioButton
-                    android:id="@+id/breakingNews"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/breaking_news"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+                android:id="@+id/breakingNews"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/breaking_news"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
-                <com.google.android.material.radiobutton.MaterialRadioButton
-                    android:id="@+id/trendingNews"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/trending_news"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+            <com.google.android.material.radiobutton.MaterialRadioButton
+                android:id="@+id/trendingNews"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/trending_news"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
-                <com.google.android.material.radiobutton.MaterialRadioButton
-                    android:id="@+id/gadgets"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/gadgets"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-            </RadioGroup>
-
+            <com.google.android.material.radiobutton.MaterialRadioButton
+                android:id="@+id/gadgets"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/gadgets"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+        </RadioGroup>
 
 
         <com.google.android.material.textfield.TextInputLayout
@@ -112,7 +111,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:layout_marginBottom="10dp"
-            android:hint="@string/enter_title"
+            android:hint="@string/hindi_headline"
             android:textColorHint="@color/black"
             app:boxStrokeColor="@color/black"
             app:endIconMode="clear_text"
@@ -122,6 +121,31 @@
 
             <EditText
                 android:id="@+id/titleTv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:autofillHints="no"
+                android:inputType="textUri"
+                android:textColor="@color/black"
+                tools:ignore="LabelFor" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInput"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:layout_marginBottom="10dp"
+            android:hint="@string/english_headline"
+            android:textColorHint="@color/black"
+            app:boxStrokeColor="@color/black"
+            app:endIconMode="clear_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayout1">
+
+            <EditText
+                android:id="@+id/titleEngTv"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:autofillHints="no"
@@ -142,7 +166,7 @@
             app:endIconMode="clear_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textInputLayout1">
+            app:layout_constraintTop_toBottomOf="@+id/textInput">
 
             <EditText
                 android:id="@+id/url"
@@ -183,6 +207,7 @@
                 android:textColor="@color/black"
                 tools:ignore="Autofill,LabelFor" />
         </com.google.android.material.textfield.TextInputLayout>
+
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textInputLayout3"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"

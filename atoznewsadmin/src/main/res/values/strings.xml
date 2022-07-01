@@ -43,4 +43,19 @@
     <string name="upload_ads_ids">Upload Ads Ids</string>
     <string name="show_own_ads">Show Own Ads</string>
     <string name="enter_english_description">Enter English News</string>
+    <string name="ads_off">Ads OFF</string>
+    <string name="english_headline">English Headline</string>
+    <string name="hindi_headline">Hindi Headline</string>
+    <string name="upload_quiz_category">Upload Quiz Category</string>
+    <string name="show_quiz_category">Show Quiz Category</string>
+
+    <string name="upload_quiz_questions">Upload Quiz Question</string>
+    <string name="enter_question">Enter Question</string>
+    <string name="option_1">Option 1</string>
+    <string name="option_2">Option 2</string>
+    <string name="option_3">Option 3</string>
+    <string name="answer">answer</string>
+    <string name="upload">Upload</string>
+    <string name="update_banner">Update Banner</string>
+
 </resources>

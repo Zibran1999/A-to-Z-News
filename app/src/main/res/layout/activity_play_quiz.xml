@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.PlayQuizActivity">
+
+    <RelativeLayout
+        android:id="@+id/adView_quiz"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:gravity="center"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <RelativeLayout
+        android:id="@+id/adView_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:gravity="center"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/quiz"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        android:orientation="vertical"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/adView_bottom"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/adView_quiz">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/question_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginBottom="24dp"
+                android:backgroundTint="@color/purple_500"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="24dp"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical">
+
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="100sp"
+                        android:layout_marginTop="10dp"
+                        android:id="@+id/img"
+                        android:src="@drawable/ad_item_bg" />
+
+                    <TextView
+                        android:id="@+id/question"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:padding="15dp"
+                        android:text="@string/app_name"
+                        android:textColor="@color/white"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="24dp"
+                        android:layout_marginBottom="24dp">
+
+                        <LinearLayout
+                            android:id="@+id/linear1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="25sp"
+                            android:layout_marginEnd="25sp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/opt_one_card"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:backgroundTint="@color/white"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:padding="10sp"
+                                android:text="@string/app_name"
+                                android:textAllCaps="false"
+                                android:textColor="@color/black"
+                                android:textSize="18sp"
+                                app:cardElevation="5dp"
+                                app:cornerRadius="8dp"
+                                app:layout_constraintEnd_toEndOf="@+id/question_card"
+                                app:layout_constraintStart_toStartOf="@+id/question_card"
+                                app:layout_constraintTop_toBottomOf="@+id/question_card"
+                                app:strokeColor="@color/purple_700"
+                                app:strokeWidth="1dp" />
+
+                        </LinearLayout>
+
+                        <com.airbnb.lottie.LottieAnimationView
+                            android:id="@+id/lottie_whatsapp"
+                            android:layout_width="100sp"
+                            android:layout_height="100sp"
+                            android:visibility="gone"
+                            app:layout_constraintBottom_toBottomOf="@+id/linear1"
+                            app:layout_constraintEnd_toEndOf="@+id/linear1"
+                            app:layout_constraintTop_toTopOf="@+id/linear1"
+                            app:lottie_autoPlay="true"
+                            app:lottie_fileName="right.json"
+                            app:lottie_loop="true" />
+
+                        <LinearLayout
+                            android:id="@+id/linear2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="25sp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginEnd="25sp"
+                            app:layout_constraintEnd_toEndOf="@+id/linear1"
+                            app:layout_constraintStart_toStartOf="@+id/linear1"
+                            app:layout_constraintTop_toBottomOf="@+id/linear1">
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/opt_two_card"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:backgroundTint="@color/white"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:padding="10sp"
+                                android:text="@string/app_name"
+                                android:textAllCaps="false"
+                                android:textColor="@color/black"
+                                android:textSize="18sp"
+                                app:cardElevation="5dp"
+                                app:cornerRadius="8dp"
+                                app:layout_constraintEnd_toEndOf="@+id/question_card"
+                                app:layout_constraintStart_toStartOf="@+id/question_card"
+                                app:layout_constraintTop_toBottomOf="@+id/question_card"
+                                app:strokeColor="@color/purple_700"
+                                app:strokeWidth="1dp" />
+
+                        </LinearLayout>
+
+                        <com.airbnb.lottie.LottieAnimationView
+                            android:id="@+id/lottie_whatsapp2"
+                            android:layout_width="100sp"
+                            android:layout_height="100sp"
+                            android:visibility="gone"
+
+                            app:layout_constraintBottom_toBottomOf="@+id/linear2"
+                            app:layout_constraintEnd_toEndOf="@+id/linear2"
+                            app:layout_constraintTop_toTopOf="@+id/linear2"
+                            app:lottie_autoPlay="true"
+                            app:lottie_fileName="right.json"
+                            app:lottie_loop="true" />
+
+                        <LinearLayout
+                            android:id="@+id/linear3"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="25sp"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginEnd="25sp"
+                            app:layout_constraintEnd_toEndOf="@+id/linear2"
+                            app:layout_constraintStart_toStartOf="@+id/linear2"
+                            app:layout_constraintTop_toBottomOf="@+id/linear2">
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/opt_three_card"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:backgroundTint="@color/white"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:padding="10sp"
+                                android:text="@string/app_name"
+                                android:textAllCaps="false"
+                                android:textColor="@color/black"
+                                android:textSize="18sp"
+                                app:cardElevation="5dp"
+                                app:cornerRadius="8dp"
+                                app:strokeColor="@color/purple_700"
+                                app:strokeWidth="1dp" />
+
+                        </LinearLayout>
+
+                        <com.airbnb.lottie.LottieAnimationView
+                            android:id="@+id/lottie_whatsapp3"
+                            android:layout_width="100sp"
+                            android:layout_height="100sp"
+                            android:visibility="gone"
+                            app:layout_constraintBottom_toBottomOf="@+id/linear3"
+                            app:layout_constraintEnd_toEndOf="@+id/linear3"
+                            app:layout_constraintTop_toTopOf="@+id/linear3"
+                            app:lottie_autoPlay="true"
+                            app:lottie_fileName="right.json"
+                            app:lottie_loop="true" />
+
+                        <LinearLayout
+                            android:id="@+id/linear4"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="25sp"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginEnd="25sp"
+                            app:layout_constraintEnd_toEndOf="@+id/linear3"
+                            app:layout_constraintStart_toStartOf="@+id/linear3"
+                            app:layout_constraintTop_toBottomOf="@+id/linear3">
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/opt_four_card"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:backgroundTint="@color/white"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:padding="10sp"
+                                android:text="@string/app_name"
+                                android:textAllCaps="false"
+                                android:textColor="@color/black"
+                                android:textSize="18sp"
+                                app:cardElevation="5dp"
+                                app:cornerRadius="8dp"
+                                app:strokeColor="@color/purple_700"
+                                app:strokeWidth="1dp" />
+
+                        </LinearLayout>
+
+                        <com.airbnb.lottie.LottieAnimationView
+                            android:id="@+id/lottie_whatsapp4"
+                            android:layout_width="100sp"
+                            android:layout_height="100sp"
+                            android:visibility="gone"
+                            app:layout_constraintBottom_toBottomOf="@+id/linear4"
+                            app:layout_constraintEnd_toEndOf="@+id/linear4"
+                            app:layout_constraintTop_toTopOf="@+id/linear4"
+                            app:lottie_autoPlay="true"
+                            app:lottie_fileName="right.json"
+                            app:lottie_loop="true" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/question_no_card"
+                android:layout_width="70dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="-24dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="9dp"
+                app:layout_constraintBottom_toTopOf="@+id/question_card"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:id="@+id/questionNo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="@string/_1_10"
+                        android:textColor="@color/black"
+
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/score"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20sp"
+        android:backgroundTint="@color/purple_700"
+        android:elevation="5dp"
+        android:visibility="gone"
+        app:cardCornerRadius="10sp"
+        app:layout_constraintBottom_toTopOf="@+id/adView_bottom"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/adView_quiz"
+        app:strokeColor="#00BCD4"
+        app:strokeWidth="1dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            <TextView
+                android:id="@+id/cong"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30sp"
+                android:text="@string/congratulations"
+                android:textColor="@color/white"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30sp"
+                android:text="@string/your_score"
+                android:textAllCaps="true"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="@+id/cong"
+                app:layout_constraintStart_toStartOf="@+id/cong"
+                app:layout_constraintTop_toBottomOf="@+id/cong" />
+
+            <TextView
+                android:id="@+id/scoreResult"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15sp"
+                android:text="@string/_10_10"
+                android:textAllCaps="true"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="@+id/cong"
+                app:layout_constraintStart_toStartOf="@+id/cong"
+                app:layout_constraintTop_toBottomOf="@+id/textView4" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/nextBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10sp"
+                android:backgroundTint="@color/white"
+                android:gravity="center"
+                android:text="@string/next"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                app:cornerRadius="5dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/scoreResult"
+                app:strokeColor="#00BCD4"
+                app:strokeWidth="1dp" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

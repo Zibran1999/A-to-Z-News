@@ -5,17 +5,14 @@
     <string name="tab_text_2">Tab 2</string>
     <string name="todo">TODO</string>
     <string name="version">Version: %1$s</string>
-    <string name="disclaimer_text">This Product Reviews App takes every precaution to ensure that the information provided
-        on the App is current and accurate however the owner of the App does not guarantee the accuracy of any information on this App.
-        It is fully the responsibility of users to cross-check before they make any decision.\n\n
-The App is not liable for any errors or omissions or any kind of results obtained from the use of this information.</string>
+    <string name="disclaimer_text">The Content of this App is taken from Various Sources on the Internet and the Owner of this App is not Guarantee the Accuracy of the Content. Unknowingly if we are breaching the copyright of the respective owner, Please Let us know to Remove the Content as soon as possible.</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="home">Home</string>
-    <string name="visit_our_site">Visit Our Site</string>
-    <string name="share_it">Share It</string>
-    <string name="rate_app">Rate App</string>
+    <string name="visit_our_site">Visit</string>
+    <string name="share_it">Share me</string>
+    <string name="rate_app">Rate me</string>
     <string name="privacy_policy">Privacy Policy</string>
     <string name="disclaimer">Disclaimer</string>
     <string name="no_connection">No Connection</string>
@@ -23,4 +20,18 @@ The App is not liable for any errors or omissions or any kind of results obtaine
     <string name="navigation_drawer_close">Close</string>
     <string name="hin">Hin</string>
     <string name="eng">Eng</string>
+    <string name="app_id">ca-app-pub-1306982071797241~2630782596</string>
+    <string name="breaking_news">Breaking News</string>
+    <string name="trending_news">Trending News</string>
+    <string name="read_more">Read More</string>
+    <string name="read_more_hindi">और पढ़ें।</string>
+    <string name="welcome_to_na_to_z_news">Welcome to\nA to Z News</string>
+    <string name="welcome">Welcome\n To\nA to Z News</string>
+    <string name="get_start">Get Started</string>
+    <string name="_1_10">1/10</string>
+    <string name="congratulations">Congratulations!</string>
+    <string name="your_score">your score</string>
+    <string name="_10_10">10/10</string>
+    <string name="next">next</string>
+
 </resources>
