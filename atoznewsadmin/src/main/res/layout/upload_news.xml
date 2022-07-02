@@ -78,7 +78,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/choseNewsImg">
 
-            <com.google.android.material.radiobutton.MaterialRadioButton
+            <CheckBox
                 android:id="@+id/breakingNews"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -86,21 +86,23 @@
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
-            <com.google.android.material.radiobutton.MaterialRadioButton
+            <CheckBox
                 android:id="@+id/trendingNews"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/trending_news"
                 android:textSize="16sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:visibility="gone" />
 
-            <com.google.android.material.radiobutton.MaterialRadioButton
+            <CheckBox
                 android:id="@+id/gadgets"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/gadgets"
                 android:textSize="16sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:visibility="gone" />
         </RadioGroup>
 
 

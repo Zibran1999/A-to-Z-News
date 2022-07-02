@@ -100,6 +100,7 @@ dependencies {
     implementation 'io.github.pilgr:paperdb:2.7.2'
     implementation 'commons-io:commons-io:2.6'
     implementation 'com.devbrackets.android:exomedia:4.3.0'
+    implementation 'com.github.delight-im:Android-AdvancedWebView:v3.2.1'
 
 
 }

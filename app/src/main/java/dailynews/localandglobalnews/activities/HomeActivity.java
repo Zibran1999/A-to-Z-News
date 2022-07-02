@@ -71,8 +71,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     FirebaseAnalytics mFirebaseAnalytics;
     ShowAds showAds = new ShowAds();
     String action;
-    SharedPreferences preferences;
-
     public BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -87,7 +85,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             }
         }
     };
-
+    SharedPreferences preferences;
     private IntentFilter intentFilter;
     private Bundle bundle;
 
@@ -97,7 +95,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         binding.viewPager.setVisibility(View.VISIBLE);
         binding.tabs.setVisibility(View.VISIBLE);
         enableNavItems();
-        if (count==2) {
+        if (count == 2) {
             if (action != null) {
                 Log.d("ContentValueForPref", action);
                 switch (action) {
@@ -105,12 +103,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                         binding.viewPager.setCurrentItem(0);
                         action = null;
                         break;
-                    case "cat":
+                    case "gad":
                         binding.viewPager.setCurrentItem(1);
                         action = null;
 
                         break;
-                    case "gad":
+                    case "quiz":
                         binding.viewPager.setCurrentItem(2);
                         action = null;
                         break;
@@ -395,7 +393,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onBackPressed() {
 
-        Log.d("ContentValue",preferences.getString("action",""));
+        Log.d("ContentValue", preferences.getString("action", ""));
 
         if (preferences.getString("action", "").equals("")) {
             super.onBackPressed();

@@ -109,9 +109,10 @@ public class PlayQuizActivity extends AppCompatActivity implements View.OnClickL
 //        lottieAnimationView.setVisibility(View.GONE);
         if (questionAttempted <= 15) {
             questionNo.setText(questionAttempted + "/15");
-            if (!Objects.equals(quizModelList.get(currentPos).getImg(), "null"))
+            if (!Objects.equals(quizModelList.get(currentPos).getImg(), "null")) {
+                quizBinding.img.setVisibility(View.VISIBLE);
                 Glide.with(this).load(ApiWebServices.base_url + "quiz_images/" + quizModelList.get(currentPos).getImg()).into(quizBinding.img);
-            else
+            } else
                 quizBinding.img.setVisibility(View.GONE);
             question.setText(quizModelList.get(currentPos).getQues());
             op1.setText(quizModelList.get(currentPos).getOp1());

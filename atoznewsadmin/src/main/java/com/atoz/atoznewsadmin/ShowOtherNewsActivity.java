@@ -81,7 +81,14 @@ public class ShowOtherNewsActivity extends AppCompatActivity implements NewsAdap
         binding.newsRV.setLayoutManager(layoutManager);
         binding.newsRV.setAdapter(newsAdapter);
         key = getIntent().getStringExtra("tableName");
-        fetchNews(key);
+
+        if (key.equals("breaking_news")) {
+            fetchBreakingsNews(key);
+
+        } else {
+
+            fetchNews(key);
+        }
         launcher = registerForActivityResult(new ActivityResultContracts.GetContent(), result -> {
 
             if (result != null) {
@@ -101,6 +108,31 @@ public class ShowOtherNewsActivity extends AppCompatActivity implements NewsAdap
 
 
         });
+    }
+
+    private void fetchBreakingsNews(String key) {
+        Call<List<NewsModel>> listCall = apiInterface.fetchNews(key);
+        listCall.enqueue(new Callback<List<NewsModel>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<NewsModel>> call, @NonNull Response<List<NewsModel>> response) {
+                if (response.isSuccessful()) {
+                    if (!Objects.requireNonNull(response.body()).isEmpty()) {
+                        newsModels.clear();
+                        newsModels.addAll(response.body());
+                        newsAdapter.updateList(newsModels);
+                        loadingDialog.dismiss();
+//                        Log.d("contentValue", newsModels.get(0).getTitle());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<NewsModel>> call, @NonNull Throwable t) {
+                loadingDialog.dismiss();
+                Log.d("contentValue", t.getMessage());
+            }
+        });
+
     }
 
     private void fetchNews(String key) {
@@ -131,21 +163,64 @@ public class ShowOtherNewsActivity extends AppCompatActivity implements NewsAdap
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void newsOnClicked(NewsModel newsModel) {
-        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
-        String[] items = new String[]{"Update Product", "Delete Product"};
-        builder.setTitle("Update OR Delete Product").setCancelable(true).setItems(items, (dialogInterface, which) -> {
-            switch (which) {
-                case 0:
-                    setUploadNewsDialog(newsModel);
-                    break;
-                case 1:
-                    deleteProducts(newsModel, "deleteN");
-                    break;
+        if (key.equals("breaking_news")) {
+            MaterialAlertDialogBuilder builders = new MaterialAlertDialogBuilder(this);
+
+            builders.setTitle("Delete Product")
+                    .setMessage("Would you like to delete this banner?")
+                    .setNegativeButton("Cancel", (dialogInterface, i) -> {
+                    })
+                    .setPositiveButton("Ok", (dialogInterface, i) -> {
+                        loadingDialog.show();
+                        map.put("id", newsModel.getId());
+                        map.put("key", "breaking");
+                        call = apiInterface.removeNews(map);
+                        deleteData(call);
+
+                    }).show();
+
+        } else {
+
+            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
+            String[] items = new String[]{"Update Product", "Delete Product"};
+            builder.setTitle("Update OR Delete Product").setCancelable(true).setItems(items, (dialogInterface, which) -> {
+                switch (which) {
+                    case 0:
+                        setUploadNewsDialog(newsModel);
+                        break;
+                    case 1:
+                        deleteProducts(newsModel, "deleteN");
+                        break;
+
+                }
+            });
+
+            builder.show();
+        }
+    }
+
+    private void deleteData(Call<MessageModel> call) {
+        call.enqueue(new Callback<MessageModel>() {
+            @Override
+            public void onResponse(@NonNull Call<MessageModel> call, @NonNull Response<MessageModel> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(ShowOtherNewsActivity.this, Objects.requireNonNull(response.body()).getMessage(), Toast.LENGTH_SHORT).show();
+                    if (key != null) {
+                        fetchBreakingsNews(key);
+                    }
+                } else {
+                    Toast.makeText(ShowOtherNewsActivity.this, Objects.requireNonNull(response.body()).getError(), Toast.LENGTH_SHORT).show();
+                }
+                loadingDialog.dismiss();
+            }
+
+
+            @Override
+            public void onFailure(@NonNull Call<MessageModel> call, @NonNull Throwable t) {
+                loadingDialog.dismiss();
 
             }
         });
-
-        builder.show();
     }
 
     private void deleteProducts(NewsModel newsModel, String deleteS) {

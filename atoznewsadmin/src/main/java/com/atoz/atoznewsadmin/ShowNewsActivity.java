@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
-import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -208,7 +207,13 @@ public class ShowNewsActivity extends AppCompatActivity implements NewsAdapter.N
         uploadNewsBinding.url.setText(newsModel.getUrl());
         uploadNewsBinding.desc.setText(HtmlCompat.fromHtml(newsModel.getDesc(), HtmlCompat.FROM_HTML_MODE_LEGACY));
         uploadNewsBinding.engDesc.setText(HtmlCompat.fromHtml(newsModel.getEngDesc(), HtmlCompat.FROM_HTML_MODE_LEGACY));
-        uploadNewsBinding.radioGroup.setVisibility(View.GONE);
+//        uploadNewsBinding.radioGroup.setVisibility(View.GONE);
+        uploadNewsBinding.trendingNews.setChecked(Boolean.parseBoolean(newsModel.getTrending()));
+        uploadNewsBinding.breakingNews.setChecked(Boolean.parseBoolean(newsModel.getBreaking()));
+        uploadNewsBinding.gadgets.setChecked(Boolean.parseBoolean(newsModel.getGadgets()));
+
+
+
         encodedImg = newsModel.getNewsImg();
         uploadNewsBinding.upload.setOnClickListener(view -> {
             Date c = Calendar.getInstance().getTime();
@@ -233,6 +238,12 @@ public class ShowNewsActivity extends AppCompatActivity implements NewsAdapter.N
             String url = uploadNewsBinding.url.getText().toString().trim();
             String desc = uploadNewsBinding.desc.getText().toString().trim();
             String engDesc = uploadNewsBinding.engDesc.getText().toString().trim();
+            boolean trending;
+            boolean breaking;
+            boolean gadgets;
+            trending = uploadNewsBinding.trendingNews.isChecked();
+            breaking = uploadNewsBinding.breakingNews.isChecked();
+            gadgets = uploadNewsBinding.gadgets.isChecked();
 
             if (TextUtils.isEmpty(title)) {
                 uploadNewsBinding.titleTv.setError("title Required");
@@ -242,7 +253,7 @@ public class ShowNewsActivity extends AppCompatActivity implements NewsAdapter.N
                 uploadNewsBinding.titleEngTv.setError("title Required");
                 uploadNewsBinding.titleEngTv.requestFocus();
                 loadingDialog.dismiss();
-            }else if (TextUtils.isEmpty(url)) {
+            } else if (TextUtils.isEmpty(url)) {
                 uploadNewsBinding.url.setError("Url Required");
                 uploadNewsBinding.url.requestFocus();
                 loadingDialog.dismiss();
@@ -250,7 +261,7 @@ public class ShowNewsActivity extends AppCompatActivity implements NewsAdapter.N
                 uploadNewsBinding.desc.setError("desc Required");
                 uploadNewsBinding.desc.requestFocus();
                 loadingDialog.dismiss();
-            }else if (TextUtils.isEmpty(engDesc)) {
+            } else if (TextUtils.isEmpty(engDesc)) {
                 uploadNewsBinding.engDesc.setError("desc Required");
                 uploadNewsBinding.engDesc.requestFocus();
                 loadingDialog.dismiss();
@@ -266,6 +277,10 @@ public class ShowNewsActivity extends AppCompatActivity implements NewsAdapter.N
                     map.put("date", formattedDate);
                     map.put("time", selectTime);
                     map.put("id", newsModel.getId());
+                    map.put("trending", String.valueOf(trending));
+                    map.put("breaking", String.valueOf(breaking));
+                    map.put("gadgets", String.valueOf(gadgets));
+
                     map.put("key", "0");
                     call = apiInterface.updateCatNews(map);
                 } else {
@@ -280,9 +295,14 @@ public class ShowNewsActivity extends AppCompatActivity implements NewsAdapter.N
                     map.put("time", selectTime);
                     map.put("id", newsModel.getId());
                     map.put("key", "1");
+                    map.put("trending", String.valueOf(trending));
+                    map.put("breaking", String.valueOf(breaking));
+                    map.put("gadgets", String.valueOf(gadgets));
+
                     call = apiInterface.updateCatNews(map);
                 }
 
+                Log.d("contentValue", String.valueOf(breaking));
                 uploadData(call, dialog);
 
             }
@@ -313,6 +333,7 @@ public class ShowNewsActivity extends AppCompatActivity implements NewsAdapter.N
             }
         });
     }
+
     public String imageStore(Bitmap bitmap) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 60, stream);
