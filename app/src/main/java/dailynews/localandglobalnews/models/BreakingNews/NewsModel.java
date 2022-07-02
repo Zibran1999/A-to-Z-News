@@ -69,3 +69,17 @@ public class NewsModel implements Serializable {
         return engTitle;
     }
 }
+
+
+//    DELETE FROM cat_news
+//        WHERE id NOT IN (
+//        SELECT id
+//        FROM (
+//        SELECT id
+//        FROM `cat_news`
+//        WHERE catId = 2 ORDER BY id DESC
+//        LIMIT 25
+//        ) foo
+//        )
+
+

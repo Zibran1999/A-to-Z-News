@@ -10,7 +10,6 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.window.SplashScreen;
 
 import androidx.annotation.NonNull;
 
@@ -197,6 +196,7 @@ public class MyApp extends Application {
                     case "cat":
                     case "bra":
                     case "tre":
+                    case "quiz":
                     case "gad": {
                         Intent intent = new Intent(MyApp.this, HomeActivity.class);
                         intent.putExtra("action", activityToBeOpened);

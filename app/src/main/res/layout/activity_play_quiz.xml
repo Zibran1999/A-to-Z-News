@@ -37,8 +37,10 @@
         android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/adView_bottom"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/adView_quiz">
+        app:layout_constraintTop_toBottomOf="@+id/adView_quiz"
+        app:layout_constraintVertical_bias="1.0">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -54,10 +56,9 @@
                 android:layout_marginTop="24dp"
                 android:layout_marginEnd="24dp"
                 android:layout_marginBottom="24dp"
-                android:backgroundTint="@color/purple_500"
+                android:backgroundTint="@color/white"
                 app:cardCornerRadius="20dp"
                 app:cardElevation="8dp"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -70,10 +71,10 @@
                     android:orientation="vertical">
 
                     <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/img"
                         android:layout_width="match_parent"
                         android:layout_height="100sp"
                         android:layout_marginTop="10dp"
-                        android:id="@+id/img"
                         android:src="@drawable/ad_item_bg" />
 
                     <TextView
@@ -84,193 +85,197 @@
                         android:gravity="center"
                         android:padding="15dp"
                         android:text="@string/app_name"
-                        android:textColor="@color/white"
+                        android:textColor="@color/black"
                         android:textSize="20sp"
                         android:textStyle="bold" />
 
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginTop="24dp"
-                        android:layout_marginBottom="24dp">
-
-                        <LinearLayout
-                            android:id="@+id/linear1"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="25sp"
-                            android:layout_marginEnd="25sp"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent">
-
-                            <com.google.android.material.button.MaterialButton
-                                android:id="@+id/opt_one_card"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:backgroundTint="@color/white"
-                                android:clickable="true"
-                                android:focusable="true"
-                                android:padding="10sp"
-                                android:text="@string/app_name"
-                                android:textAllCaps="false"
-                                android:textColor="@color/black"
-                                android:textSize="18sp"
-                                app:cardElevation="5dp"
-                                app:cornerRadius="8dp"
-                                app:layout_constraintEnd_toEndOf="@+id/question_card"
-                                app:layout_constraintStart_toStartOf="@+id/question_card"
-                                app:layout_constraintTop_toBottomOf="@+id/question_card"
-                                app:strokeColor="@color/purple_700"
-                                app:strokeWidth="1dp" />
-
-                        </LinearLayout>
-
-                        <com.airbnb.lottie.LottieAnimationView
-                            android:id="@+id/lottie_whatsapp"
-                            android:layout_width="100sp"
-                            android:layout_height="100sp"
-                            android:visibility="gone"
-                            app:layout_constraintBottom_toBottomOf="@+id/linear1"
-                            app:layout_constraintEnd_toEndOf="@+id/linear1"
-                            app:layout_constraintTop_toTopOf="@+id/linear1"
-                            app:lottie_autoPlay="true"
-                            app:lottie_fileName="right.json"
-                            app:lottie_loop="true" />
-
-                        <LinearLayout
-                            android:id="@+id/linear2"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="25sp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginEnd="25sp"
-                            app:layout_constraintEnd_toEndOf="@+id/linear1"
-                            app:layout_constraintStart_toStartOf="@+id/linear1"
-                            app:layout_constraintTop_toBottomOf="@+id/linear1">
-
-                            <com.google.android.material.button.MaterialButton
-                                android:id="@+id/opt_two_card"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:backgroundTint="@color/white"
-                                android:clickable="true"
-                                android:focusable="true"
-                                android:padding="10sp"
-                                android:text="@string/app_name"
-                                android:textAllCaps="false"
-                                android:textColor="@color/black"
-                                android:textSize="18sp"
-                                app:cardElevation="5dp"
-                                app:cornerRadius="8dp"
-                                app:layout_constraintEnd_toEndOf="@+id/question_card"
-                                app:layout_constraintStart_toStartOf="@+id/question_card"
-                                app:layout_constraintTop_toBottomOf="@+id/question_card"
-                                app:strokeColor="@color/purple_700"
-                                app:strokeWidth="1dp" />
-
-                        </LinearLayout>
-
-                        <com.airbnb.lottie.LottieAnimationView
-                            android:id="@+id/lottie_whatsapp2"
-                            android:layout_width="100sp"
-                            android:layout_height="100sp"
-                            android:visibility="gone"
-
-                            app:layout_constraintBottom_toBottomOf="@+id/linear2"
-                            app:layout_constraintEnd_toEndOf="@+id/linear2"
-                            app:layout_constraintTop_toTopOf="@+id/linear2"
-                            app:lottie_autoPlay="true"
-                            app:lottie_fileName="right.json"
-                            app:lottie_loop="true" />
-
-                        <LinearLayout
-                            android:id="@+id/linear3"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="25sp"
-                            android:layout_marginTop="5dp"
-                            android:layout_marginEnd="25sp"
-                            app:layout_constraintEnd_toEndOf="@+id/linear2"
-                            app:layout_constraintStart_toStartOf="@+id/linear2"
-                            app:layout_constraintTop_toBottomOf="@+id/linear2">
-
-                            <com.google.android.material.button.MaterialButton
-                                android:id="@+id/opt_three_card"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:backgroundTint="@color/white"
-                                android:clickable="true"
-                                android:focusable="true"
-                                android:padding="10sp"
-                                android:text="@string/app_name"
-                                android:textAllCaps="false"
-                                android:textColor="@color/black"
-                                android:textSize="18sp"
-                                app:cardElevation="5dp"
-                                app:cornerRadius="8dp"
-                                app:strokeColor="@color/purple_700"
-                                app:strokeWidth="1dp" />
-
-                        </LinearLayout>
-
-                        <com.airbnb.lottie.LottieAnimationView
-                            android:id="@+id/lottie_whatsapp3"
-                            android:layout_width="100sp"
-                            android:layout_height="100sp"
-                            android:visibility="gone"
-                            app:layout_constraintBottom_toBottomOf="@+id/linear3"
-                            app:layout_constraintEnd_toEndOf="@+id/linear3"
-                            app:layout_constraintTop_toTopOf="@+id/linear3"
-                            app:lottie_autoPlay="true"
-                            app:lottie_fileName="right.json"
-                            app:lottie_loop="true" />
-
-                        <LinearLayout
-                            android:id="@+id/linear4"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="25sp"
-                            android:layout_marginTop="5dp"
-                            android:layout_marginEnd="25sp"
-                            app:layout_constraintEnd_toEndOf="@+id/linear3"
-                            app:layout_constraintStart_toStartOf="@+id/linear3"
-                            app:layout_constraintTop_toBottomOf="@+id/linear3">
-
-                            <com.google.android.material.button.MaterialButton
-                                android:id="@+id/opt_four_card"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:backgroundTint="@color/white"
-                                android:clickable="true"
-                                android:focusable="true"
-                                android:padding="10sp"
-                                android:text="@string/app_name"
-                                android:textAllCaps="false"
-                                android:textColor="@color/black"
-                                android:textSize="18sp"
-                                app:cardElevation="5dp"
-                                app:cornerRadius="8dp"
-                                app:strokeColor="@color/purple_700"
-                                app:strokeWidth="1dp" />
-
-                        </LinearLayout>
-
-                        <com.airbnb.lottie.LottieAnimationView
-                            android:id="@+id/lottie_whatsapp4"
-                            android:layout_width="100sp"
-                            android:layout_height="100sp"
-                            android:visibility="gone"
-                            app:layout_constraintBottom_toBottomOf="@+id/linear4"
-                            app:layout_constraintEnd_toEndOf="@+id/linear4"
-                            app:layout_constraintTop_toTopOf="@+id/linear4"
-                            app:lottie_autoPlay="true"
-                            app:lottie_fileName="right.json"
-                            app:lottie_loop="true" />
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="0sp"
+                android:layout_marginTop="20sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/question_card">
+
+                <LinearLayout
+                    android:id="@+id/linear1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="25sp"
+                    android:layout_marginEnd="25sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/opt_one_card"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/white"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="10sp"
+                        android:text="@string/app_name"
+                        android:textAllCaps="false"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        app:cardElevation="5dp"
+                        app:cornerRadius="8dp"
+                        app:layout_constraintEnd_toEndOf="@+id/question_card"
+                        app:layout_constraintStart_toStartOf="@+id/question_card"
+                        app:layout_constraintTop_toBottomOf="@+id/question_card"
+                        app:strokeColor="@color/purple_700"
+                        app:strokeWidth="1dp" />
+
+                </LinearLayout>
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/lottie_whatsapp"
+                    android:layout_width="100sp"
+                    android:layout_height="100sp"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="@+id/linear1"
+                    app:layout_constraintEnd_toEndOf="@+id/linear1"
+                    app:layout_constraintTop_toTopOf="@+id/linear1"
+                    app:lottie_autoPlay="true"
+                    app:lottie_fileName="right.json"
+                    app:lottie_loop="true" />
+
+                <LinearLayout
+                    android:id="@+id/linear2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="25sp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="25sp"
+                    app:layout_constraintEnd_toEndOf="@+id/linear1"
+                    app:layout_constraintStart_toStartOf="@+id/linear1"
+                    app:layout_constraintTop_toBottomOf="@+id/linear1">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/opt_two_card"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:backgroundTint="@color/white"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="10sp"
+                        android:text="@string/app_name"
+                        android:textAllCaps="false"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        app:cardElevation="5dp"
+                        app:cornerRadius="8dp"
+                        app:layout_constraintEnd_toEndOf="@+id/question_card"
+                        app:layout_constraintStart_toStartOf="@+id/question_card"
+                        app:layout_constraintTop_toBottomOf="@+id/question_card"
+                        app:strokeColor="@color/purple_700"
+                        app:strokeWidth="1dp" />
+
+                </LinearLayout>
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/lottie_whatsapp2"
+                    android:layout_width="100sp"
+                    android:layout_height="100sp"
+                    android:visibility="gone"
+
+                    app:layout_constraintBottom_toBottomOf="@+id/linear2"
+                    app:layout_constraintEnd_toEndOf="@+id/linear2"
+                    app:layout_constraintTop_toTopOf="@+id/linear2"
+                    app:lottie_autoPlay="true"
+                    app:lottie_fileName="right.json"
+                    app:lottie_loop="true" />
+
+                <LinearLayout
+                    android:id="@+id/linear3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="25sp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="25sp"
+                    app:layout_constraintEnd_toEndOf="@+id/linear2"
+                    app:layout_constraintStart_toStartOf="@+id/linear2"
+                    app:layout_constraintTop_toBottomOf="@+id/linear2">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/opt_three_card"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/white"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="10sp"
+                        android:text="@string/app_name"
+                        android:textAllCaps="false"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        app:cardElevation="5dp"
+                        app:cornerRadius="8dp"
+                        app:strokeColor="@color/purple_700"
+                        app:strokeWidth="1dp" />
+
+                </LinearLayout>
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/lottie_whatsapp3"
+                    android:layout_width="100sp"
+                    android:layout_height="100sp"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="@+id/linear3"
+                    app:layout_constraintEnd_toEndOf="@+id/linear3"
+                    app:layout_constraintTop_toTopOf="@+id/linear3"
+                    app:lottie_autoPlay="true"
+                    app:lottie_fileName="right.json"
+                    app:lottie_loop="true" />
+
+                <LinearLayout
+                    android:id="@+id/linear4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="25sp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="25sp"
+                    app:layout_constraintEnd_toEndOf="@+id/linear3"
+                    app:layout_constraintStart_toStartOf="@+id/linear3"
+                    app:layout_constraintTop_toBottomOf="@+id/linear3">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/opt_four_card"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/white"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="10sp"
+                        android:text="@string/app_name"
+                        android:textAllCaps="false"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        app:cardElevation="5dp"
+                        app:cornerRadius="8dp"
+                        app:strokeColor="@color/purple_700"
+                        app:strokeWidth="1dp" />
+
+                </LinearLayout>
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/lottie_whatsapp4"
+                    android:layout_width="100sp"
+                    android:layout_height="100sp"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="@+id/linear4"
+                    app:layout_constraintEnd_toEndOf="@+id/linear4"
+                    app:layout_constraintTop_toTopOf="@+id/linear4"
+                    app:lottie_autoPlay="true"
+                    app:lottie_fileName="right.json"
+                    app:lottie_loop="true" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/question_no_card"

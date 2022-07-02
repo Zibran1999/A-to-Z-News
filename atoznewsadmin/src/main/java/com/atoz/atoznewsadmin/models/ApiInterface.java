@@ -153,4 +153,8 @@ public interface ApiInterface {
                                     @Part MultipartBody.Part imgKeyPart);
 
 
+    @FormUrlEncoded
+    @POST("remove_news.php")
+    Call<MessageModel> removeNews(@FieldMap Map<String, String> map);
+
 }

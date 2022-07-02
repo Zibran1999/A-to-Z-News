@@ -23,6 +23,9 @@ public class NewsModel {
     private String date;
     @SerializedName("time")
     private String time;
+    private String trending;
+    private String gadgets;
+    private String breaking;
 
 
     public String getId() {
@@ -63,5 +66,17 @@ public class NewsModel {
 
     public String getEngTitle() {
         return engTitle;
+    }
+
+    public String getTrending() {
+        return trending;
+    }
+
+    public String getGadgets() {
+        return gadgets;
+    }
+
+    public String getBreaking() {
+        return breaking;
     }
 }

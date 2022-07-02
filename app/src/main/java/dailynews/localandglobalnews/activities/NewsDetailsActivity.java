@@ -13,6 +13,7 @@ import android.preference.PreferenceManager;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.text.HtmlCompat;
@@ -144,7 +145,9 @@ public class NewsDetailsActivity extends AppCompatActivity {
             mFirebaseAnalytics.logEvent("Clicked_On_content_view_gmail_icon", bundle);
 
         });
-
+        if (newsModel.getUrl() == null) {
+            binding.readMoreBtn.setVisibility(View.GONE);
+        }
         binding.readMoreBtn.setOnClickListener(v -> {
             openWebPage(newsModel.getUrl(), NewsDetailsActivity.this);
             bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Read More");

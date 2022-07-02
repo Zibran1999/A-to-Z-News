@@ -208,7 +208,7 @@ public class ShowCategory extends AppCompatActivity implements CategoryAdapter.C
 
         if (id.equals("Upload Category")) {
             uploadNewsBinding.newsTV.setText(id);
-            uploadNewsBinding.radioGroup.setVisibility(View.GONE);
+//            uploadNewsBinding.radioGroup.setVisibility(View.GONE);
             uploadNewsBinding.textInputLayout.setVisibility(View.GONE);
             uploadNewsBinding.textInput.setVisibility(View.GONE);
             uploadNewsBinding.textInputLayout2.setVisibility(View.GONE);
@@ -243,6 +243,12 @@ public class ShowCategory extends AppCompatActivity implements CategoryAdapter.C
 
             assert currentDate != null;
             selectTime = CurrentfmtOut.format(currentDate);
+            boolean trending;
+            boolean breaking;
+            boolean gadgets;
+            trending = uploadNewsBinding.trendingNews.isChecked();
+            breaking = uploadNewsBinding.breakingNews.isChecked();
+            gadgets = uploadNewsBinding.gadgets.isChecked();
 
             String title = uploadNewsBinding.titleTv.getText().toString().trim();
             if (!id.equals("Upload Category")) {
@@ -250,7 +256,6 @@ public class ShowCategory extends AppCompatActivity implements CategoryAdapter.C
                 String desc = uploadNewsBinding.desc.getText().toString().trim();
                 String engDesc = uploadNewsBinding.engDesc.getText().toString().trim();
                 String engTitle = uploadNewsBinding.titleEngTv.getText().toString().trim();
-
 
 
                 if (encodedImg == null) {
@@ -264,7 +269,7 @@ public class ShowCategory extends AppCompatActivity implements CategoryAdapter.C
                     uploadNewsBinding.titleEngTv.setError("title Required");
                     uploadNewsBinding.titleEngTv.requestFocus();
                     loadingDialog.dismiss();
-                }else if (TextUtils.isEmpty(url)) {
+                } else if (TextUtils.isEmpty(url)) {
                     uploadNewsBinding.url.setError("Url Required");
                     uploadNewsBinding.url.requestFocus();
                     loadingDialog.dismiss();
@@ -286,6 +291,9 @@ public class ShowCategory extends AppCompatActivity implements CategoryAdapter.C
                     map.put("date", formattedDate);
                     map.put("time", selectTime);
                     map.put("catId", catModel.getId());
+                    map.put("trending", String.valueOf(trending));
+                    map.put("breaking", String.valueOf(breaking));
+                    map.put("gadgets", String.valueOf(gadgets));
 
                     call = apiInterface.uploadCatNews(map);
                     uploadData(call, dialog);

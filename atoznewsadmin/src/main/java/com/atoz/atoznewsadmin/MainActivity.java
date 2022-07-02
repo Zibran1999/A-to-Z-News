@@ -322,6 +322,9 @@ public class MainActivity extends AppCompatActivity {
             uploadNewsBinding.textInputLayout3.setVisibility(View.GONE);
         } else
             uploadNewsBinding.newsTV.setText(id);
+        uploadNewsBinding.gadgets.setVisibility(View.VISIBLE);
+        uploadNewsBinding.breakingNews.setVisibility(View.GONE);
+        uploadNewsBinding.trendingNews.setVisibility(View.GONE);
 
         uploadNewsBinding.choseNewsImg.setOnClickListener(view -> launcher.launch("image/*"));
 
