@@ -135,8 +135,6 @@ public class Repository {
             public void onResponse(@NonNull Call<List<NewsModel>> call, @NonNull Response<List<NewsModel>> response) {
                 if (response.isSuccessful()) {
                     catNewsItemMutableLiveData.setValue(response.body());
-                    Log.d("contentValueId", catModelMutableLiveData.getValue().get(0).getTitle() != null ? catModelMutableLiveData.getValue().get(0).getTitle() : "null");
-
                 }
             }
 

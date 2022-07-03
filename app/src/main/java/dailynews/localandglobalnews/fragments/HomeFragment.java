@@ -4,32 +4,38 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.PagerSnapHelper;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.ironsource.mediationsdk.IronSource;
+import com.jackandphantom.carouselrecyclerview.CarouselRecyclerview;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 import dailynews.localandglobalnews.activities.NewsDetailsActivity;
+import dailynews.localandglobalnews.activities.ShowAllItemsActivity;
+import dailynews.localandglobalnews.adapters.CategoryAdapter;
 import dailynews.localandglobalnews.adapters.NewsAdapter;
-import dailynews.localandglobalnews.adapters.NewsCategoryAdapter;
+import dailynews.localandglobalnews.adapters.OtherNewsAdapter;
 import dailynews.localandglobalnews.adapters.TrendingNewsAdapter;
-import dailynews.localandglobalnews.adapters.ViewPagerAdapter;
 import dailynews.localandglobalnews.databinding.FragmentHomeBinding;
 import dailynews.localandglobalnews.models.BreakingNews.NewsModel;
 import dailynews.localandglobalnews.models.BreakingNews.NewsModelFactory;
 import dailynews.localandglobalnews.models.BreakingNews.NewsViewModel;
-import dailynews.localandglobalnews.models.TrendingNews.TrendingNewsViewModel;
+import dailynews.localandglobalnews.models.catNewsItems.CatNewsItemModelFactory;
+import dailynews.localandglobalnews.models.catNewsItems.CatNewsItemViewModel;
 import dailynews.localandglobalnews.models.category.CatModel;
 import dailynews.localandglobalnews.models.category.CatViewModel;
 import dailynews.localandglobalnews.models.category.CatViewModelFactory;
@@ -39,29 +45,33 @@ import dailynews.localandglobalnews.utils.CommonMethods;
 import dailynews.localandglobalnews.utils.Prevalent;
 import dailynews.localandglobalnews.utils.ShowAds;
 import io.paperdb.Paper;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
-public class HomeFragment extends Fragment implements NewsAdapter.NewsInterface, TrendingNewsAdapter.TrendingNewsInterface {
+public class HomeFragment extends Fragment implements NewsAdapter.NewsInterface,  CategoryAdapter.CategoryInterface, OtherNewsAdapter.OtherNewsInterface {
     FragmentHomeBinding binding;
     ApiInterface apiInterface;
     NewsAdapter newsAdapter;
-    TrendingNewsAdapter trendingNewsAdapter;
-    NewsViewModel newsViewModel;
-    TrendingNewsViewModel trendingNewsViewModel;
     Dialog loading;
     List<NewsModel> breakingNewsModelList = new ArrayList<>();
-    List<NewsModel> trendingNewsModelList = new ArrayList<>();
     ShowAds ads = new ShowAds();
     FirebaseAnalytics mFirebaseAnalytics;
     Bundle bundle = new Bundle();
-    int visibleItems, totalItems, scrolledItems;
-    Boolean isScrolling = false;
-    LinearLayoutManager layoutManager1, layoutManager;
-
-    ViewPagerAdapter viewPagerAdapter;
-    NewsCategoryAdapter newsCategoryAdapter;
+    LinearLayoutManager layoutManager1, layoutManager, layoutManager2;
     CatViewModel catViewModel;
+    boolean callOnce = true;
+
+    // Carousel Recyclerview
+    CategoryAdapter categoryAdapter;
     List<CatModel> catModelList = new ArrayList<>();
+    CarouselRecyclerview carouselRecyclerview;
+
+    // Carousel Items
+    CatNewsItemViewModel catNewsItemViewModel;
+    List<NewsModel> catItemNewsModelList = new ArrayList<>();
+    OtherNewsAdapter otherNewsAdapter;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -72,6 +82,7 @@ public class HomeFragment extends Fragment implements NewsAdapter.NewsInterface,
                              Bundle savedInstanceState) {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         apiInterface = ApiWebServices.getApiInterface();
+
         loading = CommonMethods.getLoadingDialog(requireActivity());
         loading.show();
         binding.breakingNewsContainer.setVisibility(View.GONE);
@@ -85,18 +96,38 @@ public class HomeFragment extends Fragment implements NewsAdapter.NewsInterface,
 
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         layoutManager1.setOrientation(LinearLayoutManager.VERTICAL);
+
+        // setting data in carousel recyclerview
+        carouselRecyclerview = binding.carouselItemRecyclerView;
+        categoryAdapter = new CategoryAdapter(requireActivity(), this);
+
+        carouselRecyclerview.setAdapter(categoryAdapter);
+        carouselRecyclerview.set3DItem(true);
+        carouselRecyclerview.setFlat(false);
+        carouselRecyclerview.setInfinite(false);
+        carouselRecyclerview.setAlpha(true);
+
+
+        // Setting Carousel Items
+        layoutManager2 = new LinearLayoutManager(requireActivity());
+        binding.CRRecyclerview.setLayoutManager(layoutManager2);
+        otherNewsAdapter = new OtherNewsAdapter(requireActivity(), this);
+        binding.CRRecyclerview.setAdapter(otherNewsAdapter);
+
+
         fetchBreakingNews();
-//        fetchTrendingNews();
         fetchCategories();
         binding.swipeRefresh.setOnRefreshListener(() -> {
             binding.swipeRefresh.setRefreshing(false);
             fetchBreakingNews();
             fetchCategories();
-
-//            fetchTrendingNews();
-
         });
 
+        carouselRecyclerview.setItemSelectListener(i -> {
+//            Toast.makeText(requireActivity(),
+//                    catModelList.get(i).getId(), Toast.LENGTH_SHORT).show();
+            LoadData(catModelList.get(i).getId());
+        });
         if (Objects.equals(Paper.book().read(Prevalent.bannerTopNetworkName), "IronSourceWithMeta")) {
             binding.adViewTop.setVisibility(View.GONE);
             ads.showBottomBanner(requireActivity(), binding.adViewBottom);
@@ -112,79 +143,62 @@ public class HomeFragment extends Fragment implements NewsAdapter.NewsInterface,
         return binding.getRoot();
     }
 
-
-//    private void fetchTrendingNews() {
-//        binding.trendingNewsRecyclerview.setLayoutManager(layoutManager1);
-//        trendingNewsAdapter = new TrendingNewsAdapter(requireActivity(), this);
-//        binding.trendingNewsRecyclerview.setAdapter(trendingNewsAdapter);
-//
-//        trendingNewsViewModel = new ViewModelProvider(requireActivity(), new TrendingNewsModelFactory(
-//                requireActivity().getApplication(), "trending_news")).get(TrendingNewsViewModel.class);
-//
-//        trendingNewsViewModel.getAllNews().observe(requireActivity(), newsModels -> {
-//            if (!newsModels.isEmpty()) {
-//                trendingNewsModelList.clear();
-//                trendingNewsModelList.addAll(newsModels);
-//                trendingNewsAdapter.updateList(trendingNewsModelList);
-//                binding.trendingNewsContainer.setVisibility(View.VISIBLE);
-//                loading.dismiss();
-//            }
-//        });
-//        binding.breakingNewsRV.addOnScrollListener(new RecyclerView.OnScrollListener() {
-//            @Override
-//            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-//                super.onScrollStateChanged(recyclerView, newState);
-//                if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL)
-//                    isScrolling = true;
-//            }
-//
-//            @Override
-//            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-//                super.onScrolled(recyclerView, dx, dy);
-//                visibleItems = layoutManager1.getChildCount();
-//                totalItems = layoutManager1.getItemCount();
-//                scrolledItems = layoutManager1.findFirstVisibleItemPosition();
-//
-//                if (isScrolling && (visibleItems + scrolledItems == totalItems)) {
-//
-//                    isScrolling = false;
-//                }
-//            }
-//        });
-//    }
-
-
     private void fetchCategories() {
-
-        binding.trendingNewsTab.setupWithViewPager(binding.trendingNewsViewPager);
         catViewModel.getCategories().observe(requireActivity(), catModels -> {
             if (!catModels.isEmpty()) {
-                viewPagerAdapter = new ViewPagerAdapter(requireActivity().getSupportFragmentManager(), catModels, requireActivity());
-                binding.trendingNewsViewPager.setAdapter(viewPagerAdapter);
-                for (CatModel cat : catModels) {
-                    Log.d("contentValue", cat.getTitle());
+                catModelList.clear();
+                catModelList.addAll(catModels);
+                categoryAdapter.updateCatList(catModelList);
+
+                if (callOnce){
+                     LoadData(catModelList.get(0).getId());
                 }
 
             }
         });
     }
 
+    private void LoadData(String cId) {
+        callOnce = false;
+        Call<List<NewsModel>> call = apiInterface.fetchCatNewsItem(cId);
+        call.enqueue(new Callback<List<NewsModel>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<NewsModel>> call, @NonNull Response<List<NewsModel>> response) {
+                if (response.isSuccessful()) {
+                    catItemNewsModelList.clear();
+                    catItemNewsModelList.addAll(response.body());
+                    otherNewsAdapter.updateList(catItemNewsModelList);
+                }
+                loading.dismiss();
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<NewsModel>> call, @NonNull Throwable t) {
+                loading.dismiss();
+            }
+        });
+    }
+
     private void fetchBreakingNews() {
+        catNewsItemViewModel = new ViewModelProvider(this,
+                new CatNewsItemModelFactory(requireActivity().getApplication(), "breaking_news")).get(CatNewsItemViewModel.class);
 
         newsAdapter = new NewsAdapter(requireActivity(), this, false);
-        newsViewModel = new ViewModelProvider(requireActivity(), new NewsModelFactory(
-                requireActivity().getApplication(), "breaking_news")).get(NewsViewModel.class);
+
         binding.breakingNewsRV.setLayoutManager(layoutManager);
         binding.breakingNewsRV.setAdapter(newsAdapter);
 
-        newsViewModel.getAllNews().observe(requireActivity(), newsModels -> {
+        catNewsItemViewModel.getCatNewsItems().observe(requireActivity(), newsModels -> {
             if (!newsModels.isEmpty()) {
+                binding.breakingNewsText.setVisibility(View.VISIBLE);
                 breakingNewsModelList.clear();
                 breakingNewsModelList.addAll(newsModels);
                 newsAdapter.updateList(breakingNewsModelList);
                 binding.breakingNewsContainer.setVisibility(View.VISIBLE);
-                loading.dismiss();
+            }else {
+                binding.breakingNewsText.setVisibility(View.GONE);
             }
+            loading.dismiss();
         });
     }
 
@@ -204,20 +218,6 @@ public class HomeFragment extends Fragment implements NewsAdapter.NewsInterface,
 
 
     @Override
-    public void OnTrendingNewsClicked(NewsModel newsModel) {
-        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, ApiWebServices.base_url + "all_news_images/" + newsModel.getNewsImg());
-        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, newsModel.getTitle());
-        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "trending News");
-        mFirebaseAnalytics.logEvent("Clicked_On_trending_news", bundle);
-
-        Intent intent = new Intent(requireActivity(), NewsDetailsActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("news", newsModel);
-        intent.putExtras(bundle);
-        startActivity(intent);
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         IronSource.onResume(requireActivity());
@@ -227,6 +227,29 @@ public class HomeFragment extends Fragment implements NewsAdapter.NewsInterface,
     public void onPause() {
         super.onPause();
         IronSource.onPause(requireActivity());
+    }
+
+    @Override
+    public void OnCatClicked(CatModel catModel) {
+        Intent intent = new Intent(requireActivity(), ShowAllItemsActivity.class);
+        intent.putExtra("key", "news");
+        intent.putExtra("id", catModel.getId());
+        intent.putExtra("title",catModel.getTitle());
+        startActivity(intent);
+    }
+
+    @Override
+    public void OnOtherNewsClicked(NewsModel newsModel) {
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, ApiWebServices.base_url + "all_news_images/" + newsModel.getNewsImg());
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, newsModel.getTitle());
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Category News");
+        mFirebaseAnalytics.logEvent("Clicked_On_Category_news", bundle);
+
+        Intent intent = new Intent(requireActivity(), NewsDetailsActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("news", newsModel);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 }
 

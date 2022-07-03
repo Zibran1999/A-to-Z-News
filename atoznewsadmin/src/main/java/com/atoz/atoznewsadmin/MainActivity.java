@@ -330,7 +330,7 @@ public class MainActivity extends AppCompatActivity {
 
         uploadNewsBinding.upload.setOnClickListener(view -> {
             Date c = Calendar.getInstance().getTime();
-            SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault());
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
             formattedDate = df.format(c);
             SimpleDateFormat mdformat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
             String stime = mdformat.format(c);
@@ -458,7 +458,7 @@ public class MainActivity extends AppCompatActivity {
         uploadNewsBinding.upload.setOnClickListener(view -> {
 
             Date c = Calendar.getInstance().getTime();
-            SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault());
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
             formattedDate = df.format(c);
             SimpleDateFormat mdformat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
             String stime = mdformat.format(c);
@@ -481,9 +481,7 @@ public class MainActivity extends AppCompatActivity {
                 String url = uploadNewsBinding.url.getText().toString().trim();
                 String desc = uploadNewsBinding.desc.getText().toString().trim();
                 String engDesc = uploadNewsBinding.engDesc.getText().toString().trim();
-                boolean breakingNews = uploadNewsBinding.breakingNews.isChecked();
-                boolean trendingNews = uploadNewsBinding.trendingNews.isChecked();
-                boolean gadgetNews = uploadNewsBinding.gadgets.isChecked();
+
                 if (encodedImg == null) {
                     loadingDialog.dismiss();
                     Toast.makeText(MainActivity.this, "Please Select an Image", Toast.LENGTH_SHORT).show();
@@ -508,13 +506,8 @@ public class MainActivity extends AppCompatActivity {
                     uploadNewsBinding.engDesc.requestFocus();
                     loadingDialog.dismiss();
                 } else {
-                    if (trendingNews) {
-                        map.put("tableName", "trending_news");
-                    } else if (breakingNews) {
-                        map.put("tableName", "breaking_news");
-                    } else if (gadgetNews) {
-                        map.put("tableName", "gadget_news");
-                    }
+
+                    map.put("tableName", "gadget_news");
                     map.put("img", encodedImg);
                     map.put("title", title);
                     map.put("engTitle", engTitle);

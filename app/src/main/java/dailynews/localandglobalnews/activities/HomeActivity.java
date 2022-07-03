@@ -32,6 +32,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.ironsource.mediationsdk.IronSource;
 
@@ -90,7 +91,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private Bundle bundle;
 
     private void Set_Visibility_ON() {
-        fetchTabText();
+//        fetchTabText();
         binding.tvNotConnected.setVisibility(View.GONE);
         binding.viewPager.setVisibility(View.VISIBLE);
         binding.tabs.setVisibility(View.VISIBLE);
@@ -116,9 +117,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 }
 
             }
-            if (tabText != null) {
-                Objects.requireNonNull(binding.tabs.getTabAt(1)).setText(tabText);
-            }
+//            if (tabText != null) {
+//                Objects.requireNonNull(binding.tabs.getTabAt(1)).setText(tabText);
+//            }
         }
     }
 
@@ -171,14 +172,21 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             mFirebaseAnalytics.logEvent("Clicked_On_content_home_gmail_icon", bundle);
 
         });
-        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), this.getLifecycle());
         sectionsPagerAdapter.addFragments(new HomeFragment(), "Home");
-        sectionsPagerAdapter.addFragments(new GadgetsFragment(), "Gadgets");
+        sectionsPagerAdapter.addFragments(new GadgetsFragment(), "Reviews");
         sectionsPagerAdapter.addFragments(new CategoryFragment(), "Quiz");
 
         navigationDrawer();
         binding.viewPager.setAdapter(sectionsPagerAdapter);
-        binding.tabs.setupWithViewPager(binding.viewPager);
+        binding.viewPager.setUserInputEnabled(false);
+      //  binding.tabs.setupWithViewPager(binding.viewPager);
+      //  binding.tabs.setupWithViewPager(binding.viewPager,true);
+        new TabLayoutMediator(binding.tabs,binding.viewPager,(tab, position) -> {
+           tab.setText(sectionsPagerAdapter.titleList.get(position));
+
+        }).attach();
+        binding.tabs.setEnabled(false);
         binding.viewPager.setOffscreenPageLimit(3);
 
     }
@@ -388,6 +396,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         super.onResume();
         IronSource.onResume(this);
         registerReceiver(receiver, intentFilter);
+//        fetchTabText();
     }
 
     @Override

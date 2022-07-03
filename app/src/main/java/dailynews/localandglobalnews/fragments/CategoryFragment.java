@@ -105,7 +105,7 @@ public class CategoryFragment extends Fragment implements QuizCategoryAdapter.Qu
 
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, ApiWebServices.base_url + "all_categories_images/" + catModel.getBanner());
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, catModel.getTitle());
-        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Category");
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Category Quiz");
         mFirebaseAnalytics.logEvent("Clicked_On_category", bundle);
 
         Intent intent = new Intent(requireActivity(), PlayQuizActivity.class);

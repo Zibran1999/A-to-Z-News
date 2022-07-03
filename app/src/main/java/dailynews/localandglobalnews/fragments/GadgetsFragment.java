@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import dailynews.localandglobalnews.activities.NewsDetailsActivity;
 import dailynews.localandglobalnews.adapters.OtherNewsAdapter;
@@ -43,6 +45,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class GadgetsFragment extends Fragment implements OtherNewsAdapter.OtherNewsInterface {
+    public static final String URL_REGEX = "^((https?|ftp)://|(www|ftp)\\.)?[a-z0-9-]+(\\.[a-z0-9-]+)+([/?].*)?$";
     FragmentGadgetsBinding binding;
     OtherNewsViewModel otherNewsViewModel;
     OtherNewsAdapter otherNewsAdapter;
@@ -84,9 +87,9 @@ public class GadgetsFragment extends Fragment implements OtherNewsAdapter.OtherN
         fetchAllOtherNews();
 
         binding.swipeRefresh.setOnRefreshListener(() -> {
-            binding.swipeRefresh.setRefreshing(false);
             fetchAllOtherNews();
-
+            fetchBannerImages();
+            binding.swipeRefresh.setRefreshing(false);
         });
         if (Paper.book().read(Prevalent.bannerTopNetworkName).equals("IronSourceWithMeta")) {
             binding.adViewTop.setVisibility(View.GONE);
@@ -114,13 +117,16 @@ public class GadgetsFragment extends Fragment implements OtherNewsAdapter.OtherN
                     if (response.body().getData() != null) {
 
                         for (BannerModel ban : response.body().getData()) {
-                            if (ban.getUrl().equals("null")) {
-                                binding.tipsBanner.setVisibility(View.GONE);
-                            } else {
 
+                            Pattern p = Pattern.compile(URL_REGEX);
+                            Matcher m = p.matcher(ban.getUrl());//replace with string to compare
+                            if (m.find()) {
                                 Glide.with(requireActivity()).load(ApiWebServices.base_url + "strip_banner_images/"
                                         + ban.getImage()).into(binding.tipsBannerImageView);
+                            } else {
+                                binding.tipsBanner.setVisibility(View.GONE);
                             }
+
                             banUrl = ban.getUrl();
                             loadingDialog.dismiss();
                         }

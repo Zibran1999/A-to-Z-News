@@ -58,6 +58,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="10dp"
+            android:visibility="gone"
             android:text="@string/show_trending_news"
             android:textSize="20sp" />
 
