@@ -5,12 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:nestedScrollingEnabled="false"
-    tools:context=".fragments.HomeFragment">
+    tools:context=".fragments.HomeFragment"
+    android:descendantFocusability="blocksDescendants">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh"
         android:layout_width="match_parent"
-        android:layout_height="0sp"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/adView_bottom"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -18,10 +19,11 @@
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fillViewport="true">
+            android:layout_height="match_parent"
+            >
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -39,6 +41,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="6dp"
+                        android:visibility="gone"
                         android:text="@string/breaking_news"
                         android:textColor="@color/black"
                         android:textSize="18sp"
@@ -57,39 +60,43 @@
                         app:layout_constraintTop_toBottomOf="@+id/breaking_news_text" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
+
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="0sp"
+                    android:layout_marginTop="20dp"
+                    android:layout_height="match_parent"
                     android:descendantFocusability="blocksDescendants"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/breakingNewsContainer">
 
-                    <com.google.android.material.tabs.TabLayout
-                        android:id="@+id/trendingNews_tab"
+                    <com.jackandphantom.carouselrecyclerview.CarouselRecyclerview
+                        android:id="@+id/carousel_item_recyclerView"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="150dp"
+                        android:scrollbars="horizontal"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        android:orientation="horizontal"
+                        android:nestedScrollingEnabled="false"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_scrollFlags="scroll|enterAlways"
-                        app:tabMode="scrollable"
-                        app:tabTextColor="@color/black" />
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                    <androidx.viewpager.widget.ViewPager
-                        android:id="@+id/trendingNews_viewPager"
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/CR_recyclerview"
                         android:layout_width="match_parent"
-                        android:layout_height="0sp"
-                        android:layout_marginBottom="8dp"
-                        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                        android:layout_height="wrap_content"
+                        android:padding="8dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/trendingNews_tab" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                        app:layout_constraintTop_toBottomOf="@+id/carousel_item_recyclerView" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
+
         </androidx.core.widget.NestedScrollView>
 
 

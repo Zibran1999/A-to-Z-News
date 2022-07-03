@@ -1,6 +1,7 @@
 package dailynews.localandglobalnews.models.catNewsItems;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
@@ -20,6 +21,8 @@ public class CatNewsItemModelFactory implements ViewModelProvider.Factory {
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> aClass) {
+        Log.d("contentValueIdF", id != null ? id : "null");
+
         return (T) new CatNewsItemViewModel(application,id);
     }
 }

@@ -23,6 +23,8 @@ public class CatNewsItemViewModel extends AndroidViewModel {
     }
 
     public LiveData<List<NewsModel>> getCatNewsItems(){
+        Log.d("contentValueIdM", id != null ? id : "null");
+
         return repository.getCatNewsItemMutableLiveData(id);
     }
 }

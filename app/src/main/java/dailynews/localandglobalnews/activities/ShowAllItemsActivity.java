@@ -72,7 +72,7 @@ public class ShowAllItemsActivity extends AppCompatActivity implements OtherNews
         showAds.showInterstitialAds(this);
         switch (key) {
             case "news":
-                binding.activityTitle.setText(HtmlCompat.fromHtml(key, HtmlCompat.FROM_HTML_MODE_LEGACY));
+                binding.activityTitle.setText(HtmlCompat.fromHtml(getIntent().getStringExtra("title"), HtmlCompat.FROM_HTML_MODE_LEGACY));
                 catNewsItemViewModel = new ViewModelProvider(this,
                         new CatNewsItemModelFactory(this.getApplication(), id)).get(CatNewsItemViewModel.class);
                 LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -104,8 +104,8 @@ public class ShowAllItemsActivity extends AppCompatActivity implements OtherNews
                 catItemNewsModelList.clear();
                 catItemNewsModelList.addAll(newsModels);
                 otherNewsAdapter.updateList(catItemNewsModelList);
-                loading.dismiss();
             }
+            loading.dismiss();
         });
     }
 
@@ -115,8 +115,8 @@ public class ShowAllItemsActivity extends AppCompatActivity implements OtherNews
                 breakingNewsModelList.clear();
                 breakingNewsModelList.addAll(newsModels);
                 newsAdapter.updateList(breakingNewsModelList);
-                loading.dismiss();
             }
+            loading.dismiss();
         });
     }
 
@@ -138,6 +138,7 @@ public class ShowAllItemsActivity extends AppCompatActivity implements OtherNews
 
     @Override
     public void onBackPressed() {
+        catItemNewsModelList.clear();
         if (preferences.getString("action", "").equals("")) {
             super.onBackPressed();
             showAds.destroyBanner();

@@ -24,6 +24,9 @@ import com.ironsource.mediationsdk.IronSource;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import dailynews.localandglobalnews.BuildConfig;
 import dailynews.localandglobalnews.R;
@@ -39,6 +42,7 @@ public class NewsDetailsActivity extends AppCompatActivity {
     String hindiDesc, englishDesc, plainText;
     Spanned spanned;
     char[] chars;
+    public static final String URL_REGEX = "^((https?|ftp)://|(www|ftp)\\.)?[a-z0-9-]+(\\.[a-z0-9-]+)+([/?].*)?$";
 
     ShowAds showAds = new ShowAds();
     String hindiTitle;
@@ -76,7 +80,7 @@ public class NewsDetailsActivity extends AppCompatActivity {
                 chars = new char[spanned.length()];
                 TextUtils.getChars(spanned, 0, spanned.length(), chars, 0);
                 plainText = new String(chars);
-                binding.newDetailsDesc.loadData(plainText, "text/html", "UTF-8");
+                binding.newDetailsDesc.loadData(String.valueOf(HtmlCompat.fromHtml(englishDesc, HtmlCompat.FROM_HTML_MODE_LEGACY)), "text/html", "UTF-8");
                 binding.materialButtonToggleGroup.check(R.id.englishPreview);
                 binding.readMoreBtn.setText(R.string.read_more);
                 binding.whatsappShare.setOnClickListener(v -> {
@@ -145,14 +149,22 @@ public class NewsDetailsActivity extends AppCompatActivity {
             mFirebaseAnalytics.logEvent("Clicked_On_content_view_gmail_icon", bundle);
 
         });
-        if (newsModel.getUrl() == null) {
+
+
+
+        Pattern p = Pattern.compile(URL_REGEX);
+        Matcher m = p.matcher(newsModel.getUrl());//replace with string to compare
+        if(m.find()) {
+            binding.readMoreBtn.setVisibility(View.VISIBLE);
+            binding.readMoreBtn.setOnClickListener(v -> {
+                openWebPage(newsModel.getUrl(), NewsDetailsActivity.this);
+                bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Read More");
+                mFirebaseAnalytics.logEvent("Clicked_On_read_more", bundle);
+            });
+        }else {
             binding.readMoreBtn.setVisibility(View.GONE);
         }
-        binding.readMoreBtn.setOnClickListener(v -> {
-            openWebPage(newsModel.getUrl(), NewsDetailsActivity.this);
-            bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Read More");
-            mFirebaseAnalytics.logEvent("Clicked_On_read_more", bundle);
-        });
+
         binding.newsDetailsImageView.setOnClickListener(v -> {
             openWebPage(newsModel.getUrl(), this);
             bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, ApiWebServices.base_url + "all_news_images/" + newsModel.getNewsImg());

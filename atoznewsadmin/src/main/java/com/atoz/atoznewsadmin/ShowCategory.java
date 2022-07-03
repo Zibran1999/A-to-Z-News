@@ -227,7 +227,7 @@ public class ShowCategory extends AppCompatActivity implements CategoryAdapter.C
         uploadNewsBinding.radioGroup.setVisibility(View.GONE);
         uploadNewsBinding.upload.setOnClickListener(view -> {
             Date c = Calendar.getInstance().getTime();
-            SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault());
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
             formattedDate = df.format(c);
             SimpleDateFormat mdformat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
             String stime = mdformat.format(c);
