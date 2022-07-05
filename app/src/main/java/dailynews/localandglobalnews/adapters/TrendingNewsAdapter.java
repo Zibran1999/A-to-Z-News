@@ -36,12 +36,14 @@ public class TrendingNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private static final int ITEM_FEED_COUNT = 3;
     List<NewsModel> trendingNewsModelList = new ArrayList<>();
     Activity context;
+    String checkId;
     TrendingNewsInterface trendingNewsInterface;
     ShowAds showAds = new ShowAds();
     SharedPreferences preferences;
 
-    public TrendingNewsAdapter(Activity context, TrendingNewsInterface trendingNewsInterface) {
+    public TrendingNewsAdapter(Activity context, String checkId, TrendingNewsInterface trendingNewsInterface) {
         this.context = context;
+        this.checkId = checkId;
         this.trendingNewsInterface = trendingNewsInterface;
     }
 
@@ -95,7 +97,11 @@ public class TrendingNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     @Override
     public int getItemCount() {
         if (trendingNewsModelList.size() > 0) {
-            return trendingNewsModelList.size() + Math.round(trendingNewsModelList.size() / ITEM_FEED_COUNT);
+            if (checkId.equals("home"))
+                return Math.min(trendingNewsModelList.size(), 10);
+            else
+                return Math.min(trendingNewsModelList.size(), 25);
+
 
         }
         return 0;
@@ -140,11 +146,11 @@ public class TrendingNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         private void bindAdData() {
             Log.d("admobAdNative", Paper.book().read(Prevalent.nativeAds));
-            if (Objects.equals(Paper.book().read(Prevalent.nativeAdsType), "Native")) {
-                showAds.showNativeAds(context, binding.adLayout);
-            } else if (Objects.equals(Paper.book().read(Prevalent.nativeAdsType), "MREC")) {
-                showAds.showMrec(context, binding.adLayout);
-            }
+//            if (Objects.equals(Paper.book().read(Prevalent.nativeAdsType), "Native")) {
+//                showAds.showNativeAds(context, binding.adLayout);
+//            } else if (Objects.equals(Paper.book().read(Prevalent.nativeAdsType), "MREC")) {
+//                showAds.showMrec(context, binding.adLayout);
+//            }
 
         }
     }

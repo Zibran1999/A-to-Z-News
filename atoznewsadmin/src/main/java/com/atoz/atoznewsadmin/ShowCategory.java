@@ -138,39 +138,28 @@ public class ShowCategory extends AppCompatActivity implements CategoryAdapter.C
 
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
         if (catModel.getSubCat().equals("false") && catModel.getNews().equals("false")) {
-            String[] items = new String[]{"Add Sub Category", "Add Item", "Update Category", "Delete Category"};
-            builder.setTitle("Add Sub Category or Item").setCancelable(true).setItems(items, (dialogInterface, which) -> {
+            String[] items3 = new String[]{"Add an Item", "Show Images", "Update Category", "Delete Category"};
+            builder.setTitle("Add Item").setCancelable(true).setItems(items3, (dialogInterface, which) -> {
                 switch (which) {
                     case 0:
-                        setUploadNewsDialog("Upload Category", catModel, "Upload");
-                        break;
-                    case 1:
                         setUploadNewsDialog("upload News", catModel, "Upload");
-                        break;
-                    case 2:
-                        setUploadNewsDialog("Upload Category", catModel, "update");
-                        break;
-                    case 3:
-                        deleteCategory(catModel);
-                }
-            });
-        } else if (catModel.getSubCat().equals("true")) {
-            String[] items2 = new String[]{"Add a Subcategory", "Show Sub Category", "Update Category"};
-            builder.setTitle("Add Subcategories").setCancelable(true).setItems(items2, (dialogInterface, which) -> {
-                switch (which) {
-                    case 0:
-                        setUploadNewsDialog("Upload Category", catModel, "Upload");
+
                         break;
                     case 1:
-                        Intent intent = new Intent(this, ShowSubCategory.class);
+                        Intent intent = new Intent(this, ShowNewsActivity.class);
                         intent.putExtra("key", catModel.getId());
                         startActivity(intent);
                         break;
                     case 2:
                         setUploadNewsDialog("Upload Category", catModel, "update");
                         break;
+                    case 3:
+                        deleteCategory(catModel);
+                        break;
                 }
             });
+
+            builder.show();
         } else if (catModel.getNews().equals("true")) {
             String[] items3 = new String[]{"Add an Item", "Show Images", "Update Category"};
             builder.setTitle("Add Item").setCancelable(true).setItems(items3, (dialogInterface, which) -> {
@@ -187,12 +176,11 @@ public class ShowCategory extends AppCompatActivity implements CategoryAdapter.C
                     case 2:
                         setUploadNewsDialog("Upload Category", catModel, "update");
                         break;
+
                 }
             });
+            builder.show();
         }
-
-        builder.show();
-
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -208,7 +196,7 @@ public class ShowCategory extends AppCompatActivity implements CategoryAdapter.C
 
         if (id.equals("Upload Category")) {
             uploadNewsBinding.newsTV.setText(id);
-//            uploadNewsBinding.radioGroup.setVisibility(View.GONE);
+            uploadNewsBinding.radioGroup.setVisibility(View.GONE);
             uploadNewsBinding.textInputLayout.setVisibility(View.GONE);
             uploadNewsBinding.textInput.setVisibility(View.GONE);
             uploadNewsBinding.textInputLayout2.setVisibility(View.GONE);
@@ -221,10 +209,11 @@ public class ShowCategory extends AppCompatActivity implements CategoryAdapter.C
             }
         } else
             uploadNewsBinding.newsTV.setText(id);
+        uploadNewsBinding.breakingNews.setVisibility(View.VISIBLE);
 
         uploadNewsBinding.choseNewsImg.setOnClickListener(view -> launcher.launch("image/*"));
 
-        uploadNewsBinding.radioGroup.setVisibility(View.GONE);
+//        uploadNewsBinding.radioGroup.setVisibility(View.GONE);
         uploadNewsBinding.upload.setOnClickListener(view -> {
             Date c = Calendar.getInstance().getTime();
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
@@ -384,9 +373,10 @@ public class ShowCategory extends AppCompatActivity implements CategoryAdapter.C
 
     private void deleteCategory(CatModel catModel) {
         loadingDialog.show();
+
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
-        builder.setTitle("Delete Banner")
-                .setMessage("Would you like to delete this banner?")
+        builder.setTitle("Delete Category")
+                .setMessage("Would you like to delete this Category?")
                 .setNegativeButton("Cancel", (dialogInterface, i) -> {
                 })
                 .setPositiveButton("Ok", (dialogInterface, i) -> {

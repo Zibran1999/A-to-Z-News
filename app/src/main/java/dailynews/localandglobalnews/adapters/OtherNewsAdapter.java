@@ -20,7 +20,6 @@ import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 import dailynews.localandglobalnews.R;
 import dailynews.localandglobalnews.databinding.AdLayoutBinding;
@@ -112,7 +111,7 @@ public class OtherNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         void OnOtherNewsClicked(NewsModel newsModel);
     }
 
-    public  class NewsViewHolder extends RecyclerView.ViewHolder {
+    public class NewsViewHolder extends RecyclerView.ViewHolder {
         ImageView newsImg;
         TextView title, date, time;
 
@@ -140,11 +139,11 @@ public class OtherNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         private void bindAdData() {
             Log.d("admobAdNative", Paper.book().read(Prevalent.nativeAds));
-            if (Objects.equals(Paper.book().read(Prevalent.nativeAdsType), "Native")) {
-                showAds.showNativeAds(context, binding.adLayout);
-            } else if (Objects.equals(Paper.book().read(Prevalent.nativeAdsType), "MREC")) {
-                showAds.showMrec(context, binding.adLayout);
-            }
+//            if (Objects.equals(Paper.book().read(Prevalent.nativeAdsType), "Native")) {
+//                showAds.showNativeAds(context, binding.adLayout);
+//            } else if (Objects.equals(Paper.book().read(Prevalent.nativeAdsType), "MREC")) {
+//                showAds.showMrec(context, binding.adLayout);
+//            }
 
         }
     }

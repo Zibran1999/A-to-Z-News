@@ -1,7 +1,5 @@
 package dailynews.localandglobalnews.activities;
 
-import static androidx.fragment.app.FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT;
-
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
@@ -36,7 +34,11 @@ import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.ironsource.mediationsdk.IronSource;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import dailynews.localandglobalnews.R;
 import dailynews.localandglobalnews.activities.ui.main.SectionsPagerAdapter;
@@ -44,6 +46,8 @@ import dailynews.localandglobalnews.databinding.ActivityHomeBinding;
 import dailynews.localandglobalnews.fragments.CategoryFragment;
 import dailynews.localandglobalnews.fragments.GadgetsFragment;
 import dailynews.localandglobalnews.fragments.HomeFragment;
+import dailynews.localandglobalnews.models.BannerModel;
+import dailynews.localandglobalnews.models.BannerModelList;
 import dailynews.localandglobalnews.models.tabTextAndUrls.UrlOrTAbTextModel;
 import dailynews.localandglobalnews.utils.ApiInterface;
 import dailynews.localandglobalnews.utils.ApiWebServices;
@@ -58,8 +62,8 @@ import retrofit2.Response;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     public static final String BroadCastStringForAction = "checkingInternet";
+    public static final String URL_REGEX = "^((https?|ftp)://|(www|ftp)\\.)?[a-z0-9-]+(\\.[a-z0-9-]+)+([/?].*)?$";
     private static final float END_SCALE = 0.7f;
-    public String tabText;
     int count = 1;
     ImageView navMenu;
     DrawerLayout drawerLayout;
@@ -87,6 +91,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }
     };
     SharedPreferences preferences;
+    Map<String, String> map = new HashMap<>();
     private IntentFilter intentFilter;
     private Bundle bundle;
 
@@ -117,9 +122,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 }
 
             }
-//            if (tabText != null) {
-//                Objects.requireNonNull(binding.tabs.getTabAt(1)).setText(tabText);
-//            }
+
         }
     }
 
@@ -180,12 +183,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         navigationDrawer();
         binding.viewPager.setAdapter(sectionsPagerAdapter);
         binding.viewPager.setUserInputEnabled(false);
-      //  binding.tabs.setupWithViewPager(binding.viewPager);
-      //  binding.tabs.setupWithViewPager(binding.viewPager,true);
-        new TabLayoutMediator(binding.tabs,binding.viewPager,(tab, position) -> {
-           tab.setText(sectionsPagerAdapter.titleList.get(position));
-
-        }).attach();
+        new TabLayoutMediator(binding.tabs, binding.viewPager, (tab, position) -> tab.setText(sectionsPagerAdapter.titleList.get(position))).attach();
         binding.tabs.setEnabled(false);
         binding.viewPager.setOffscreenPageLimit(3);
 
@@ -330,7 +328,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_share:
                 bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Share Menu");
                 mFirebaseAnalytics.logEvent("Clicked_On_ShareMenu", bundle);
-                CommonMethods.shareApp(HomeActivity.this, "shareText");
+                CommonMethods.shareApp(HomeActivity.this, "Let me recommend you this app");
                 break;
             case R.id.nav_rate:
                 bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Rate Menu");
@@ -388,21 +386,64 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onResume() {
-        if (Objects.requireNonNull(Paper.book().read(Prevalent.bannerTopNetworkName)).equals("IronSourceWithMeta")) {
-            showAds.showTopBanner(this, binding.adViewTop);
-        } else if (Objects.requireNonNull(Paper.book().read(Prevalent.bannerBottomNetworkName)).equals("IronSourceWithMeta")) {
-            showAds.showBottomBanner(this, binding.adViewBottom);
+        if (binding.tabs.getSelectedTabPosition() == 0) {
+            if (Objects.requireNonNull(Paper.book().read(Prevalent.bannerTopNetworkName)).equals("IronSourceWithMeta")) {
+                binding.adViewTop.setVisibility(View.GONE);
+            } else if (Objects.requireNonNull(Paper.book().read(Prevalent.bannerBottomNetworkName)).equals("IronSourceWithMeta")) {
+                showAds.showBottomBanner(this, binding.adViewBottom);
+            }
+        } else if (binding.tabs.getSelectedTabPosition() == 1) {
+            if (Objects.requireNonNull(Paper.book().read(Prevalent.bannerTopNetworkName)).equals("IronSourceWithMeta")) {
+                map.put("title", "news_banner");
+                Call<BannerModelList> call = apiInterface.fetchBanner(map);
+                call.enqueue(new Callback<BannerModelList>() {
+                    @Override
+                    public void onResponse(@NonNull Call<BannerModelList> call, @NonNull Response<BannerModelList> response) {
+
+                        if (response.isSuccessful()) {
+                            assert response.body() != null;
+                            if (response.body().getData() != null) {
+
+                                for (BannerModel ban : response.body().getData()) {
+
+                                    Pattern p = Pattern.compile(URL_REGEX);
+                                    Matcher m = p.matcher(ban.getUrl());//replace with string to compare
+                                    if (m.find()) {
+                                        binding.adViewTop.setVisibility(View.GONE);
+                                    } else {
+                                        showAds.showTopBanner(HomeActivity.this, binding.adViewTop);
+
+                                    }
+
+
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<BannerModelList> call, @NonNull Throwable t) {
+
+                    }
+                });
+            } else if (Objects.requireNonNull(Paper.book().read(Prevalent.bannerBottomNetworkName)).equals("IronSourceWithMeta")) {
+                showAds.showBottomBanner(this, binding.adViewBottom);
+            }
+        } else if (binding.tabs.getSelectedTabPosition() == 2) {
+            if (Objects.requireNonNull(Paper.book().read(Prevalent.bannerTopNetworkName)).equals("IronSourceWithMeta")) {
+                showAds.showTopBanner(this, binding.adViewTop);
+            } else if (Objects.requireNonNull(Paper.book().read(Prevalent.bannerBottomNetworkName)).equals("IronSourceWithMeta")) {
+                showAds.showBottomBanner(this, binding.adViewBottom);
+            }
         }
         super.onResume();
         IronSource.onResume(this);
         registerReceiver(receiver, intentFilter);
-//        fetchTabText();
     }
 
     @Override
     public void onBackPressed() {
 
-        Log.d("ContentValue", preferences.getString("action", ""));
 
         if (preferences.getString("action", "").equals("")) {
             super.onBackPressed();
@@ -440,25 +481,5 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    private void fetchTabText() {
-
-        Call<UrlOrTAbTextModel> call = apiInterface.fetchURLOrTABText("tab_text");
-        call.enqueue(new Callback<UrlOrTAbTextModel>() {
-            @Override
-            public void onResponse(@NonNull Call<UrlOrTAbTextModel> call, @NonNull Response<UrlOrTAbTextModel> response) {
-                if (response.isSuccessful()) {
-                    assert response.body() != null;
-                    tabText = response.body().getUrl();
-                    Log.d("tabText", tabText);
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<UrlOrTAbTextModel> call, @NonNull Throwable t) {
-                Log.d("contentError", t.getMessage());
-            }
-        });
-
-    }
 
 }

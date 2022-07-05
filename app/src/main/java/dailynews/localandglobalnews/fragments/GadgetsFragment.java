@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -91,18 +92,7 @@ public class GadgetsFragment extends Fragment implements OtherNewsAdapter.OtherN
             fetchBannerImages();
             binding.swipeRefresh.setRefreshing(false);
         });
-        if (Paper.book().read(Prevalent.bannerTopNetworkName).equals("IronSourceWithMeta")) {
-            binding.adViewTop.setVisibility(View.GONE);
-            ads.showBottomBanner(requireActivity(), binding.adViewBottom);
 
-        } else if (Paper.book().read(Prevalent.bannerBottomNetworkName).equals("IronSourceWithMeta")) {
-            binding.adViewBottom.setVisibility(View.GONE);
-            ads.showTopBanner(requireActivity(), binding.adViewTop);
-
-        } else {
-            ads.showTopBanner(requireActivity(), binding.adViewTop);
-            ads.showBottomBanner(requireActivity(), binding.adViewBottom);
-        }
         return binding.getRoot();
     }
 
@@ -121,18 +111,40 @@ public class GadgetsFragment extends Fragment implements OtherNewsAdapter.OtherN
                             Pattern p = Pattern.compile(URL_REGEX);
                             Matcher m = p.matcher(ban.getUrl());//replace with string to compare
                             if (m.find()) {
+                                if (Objects.requireNonNull(Paper.book().read(Prevalent.bannerTopNetworkName)).equals("IronSourceWithMeta")) {
+                                    binding.adViewTop.setVisibility(View.GONE);
+                                    ads.showBottomBanner(requireActivity(), binding.adViewBottom);
+
+                                } else if (Objects.requireNonNull(Paper.book().read(Prevalent.bannerBottomNetworkName)).equals("IronSourceWithMeta")) {
+                                    binding.adViewBottom.setVisibility(View.GONE);
+//                                    ads.showTopBanner(requireActivity(), binding.adViewTop);
+
+                                } else {
+//                                    ads.showTopBanner(requireActivity(), binding.adViewTop);
+                                    ads.showBottomBanner(requireActivity(), binding.adViewBottom);
+                                }
                                 Glide.with(requireActivity()).load(ApiWebServices.base_url + "strip_banner_images/"
                                         + ban.getImage()).into(binding.tipsBannerImageView);
                             } else {
                                 binding.tipsBanner.setVisibility(View.GONE);
+                                if (Objects.requireNonNull(Paper.book().read(Prevalent.bannerTopNetworkName)).equals("IronSourceWithMeta")) {
+                                    binding.adViewTop.setVisibility(View.GONE);
+                                    ads.showBottomBanner(requireActivity(), binding.adViewBottom);
+
+                                } else if (Objects.requireNonNull(Paper.book().read(Prevalent.bannerBottomNetworkName)).equals("IronSourceWithMeta")) {
+                                    binding.adViewBottom.setVisibility(View.GONE);
+                                    ads.showTopBanner(requireActivity(), binding.adViewTop);
+
+                                } else {
+                                    ads.showTopBanner(requireActivity(), binding.adViewTop);
+                                    ads.showBottomBanner(requireActivity(), binding.adViewBottom);
+                                }
                             }
 
                             banUrl = ban.getUrl();
                             loadingDialog.dismiss();
                         }
-                        binding.tipsBannerImageView.setOnClickListener(v -> {
-                            openWebPage(banUrl);
-                        });
+                        binding.tipsBannerImageView.setOnClickListener(v -> openWebPage(banUrl));
                     }
                 }
             }
@@ -146,6 +158,10 @@ public class GadgetsFragment extends Fragment implements OtherNewsAdapter.OtherN
 
     @SuppressLint("QueryPermissionsNeeded")
     public void openWebPage(String url) {
+
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Review Banner");
+        mFirebaseAnalytics.logEvent("Clicked_On_Review_Banner", bundle);
+
         Uri webpage = Uri.parse(url);
         Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
         if (intent.resolveActivity(requireActivity().getPackageManager()) != null) {
@@ -181,7 +197,9 @@ public class GadgetsFragment extends Fragment implements OtherNewsAdapter.OtherN
     @Override
     public void onResume() {
         super.onResume();
+        fetchBannerImages();
         IronSource.onResume(requireActivity());
+
     }
 
     @Override

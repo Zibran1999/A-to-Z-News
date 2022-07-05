@@ -22,21 +22,18 @@ import com.google.android.material.card.MaterialCardView;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 import dailynews.localandglobalnews.R;
 import dailynews.localandglobalnews.activities.ShowAllItemsActivity;
 import dailynews.localandglobalnews.databinding.AdLayoutBinding;
 import dailynews.localandglobalnews.models.BreakingNews.NewsModel;
 import dailynews.localandglobalnews.utils.ApiWebServices;
-import dailynews.localandglobalnews.utils.Prevalent;
 import dailynews.localandglobalnews.utils.ShowAds;
-import io.paperdb.Paper;
 
 public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int ITEM_VIEW = 0;
     private static final int AD_VIEW = 1;
-    private static final int ITEM_FEED_COUNT = 5;
+    private static final int ITEM_FEED_COUNT = 7;
 
     private static final int BUTTON_VIEW_ALL = 1;
     private static final int BUTTON_COUNT = 8;
@@ -113,7 +110,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         newsInterface.newsOnClicked(newsModels.get(Integer.parseInt(preferences.getString("cat_item_pos", "0"))));
                     }
                 }
-                if (preferences.getString("action", "").equals("bra")) {
+                if (preferences.getString("action", "").equals("bre")) {
                     if (!preferences.getString("pos", "").equals("")) {
                         newsInterface.newsOnClicked(newsModels.get(Integer.parseInt(preferences.getString("cat_item_pos", "0"))));
                     }
@@ -134,7 +131,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         newsInterface.newsOnClicked(newsModels.get(Integer.parseInt(preferences.getString("cat_item_pos", "0"))));
                     }
                 }
-                if (preferences.getString("action", "").equals("bra")) {
+                if (preferences.getString("action", "").equals("bre")) {
                     if (!preferences.getString("pos", "").equals("")) {
                         newsInterface.newsOnClicked(newsModels.get(Integer.parseInt(preferences.getString("cat_item_pos", "0"))));
                     }
@@ -153,14 +150,12 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public int getItemCount() {
         if (shouldShowAllItems) {
-            if (newsModels.size() > 0) {
-                return newsModels.size() + Math.round(newsModels.size() / ITEM_FEED_COUNT);
-            }
+            return Math.min(newsModels.size(), 25);
 
         } else {
             return Math.min(newsModels.size(), BUTTON_COUNT);
         }
-        return 0;
+
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -208,11 +203,11 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
 
         private void bindAdData() {
-            if (Objects.equals(Paper.book().read(Prevalent.nativeAdsType), "Native")) {
-                showAds.showNativeAds(context, binding.adLayout);
-            } else if (Objects.equals(Paper.book().read(Prevalent.nativeAdsType), "MREC")) {
-                showAds.showMrec(context, binding.adLayout);
-            }
+//            if (Objects.equals(Paper.book().read(Prevalent.nativeAdsType), "Native")) {
+//                showAds.showNativeAds(context, binding.adLayout);
+//            } else if (Objects.equals(Paper.book().read(Prevalent.nativeAdsType), "MREC")) {
+//                showAds.showMrec(context, binding.adLayout);
+//            }
 
         }
 

@@ -136,20 +136,7 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
         binding.updateTextUrl.setOnClickListener(view -> {
-
-            AlertDialog builder = new MaterialAlertDialogBuilder(this)
-                    .setTitle("Upload URL & TAB TEXT")
-                    .setMessage("Select your desired choice to upload content")
-                    .setCancelable(true)
-                    .setNegativeButton("Upload URL", (dialogInterface, i) -> {
-
-                        UploadUrlORTABTextDialog("Upload Url");
-
-                    }).setPositiveButton("Upload TAB-TEXT", (dialogInterface, i) -> {
-
-                        UploadUrlORTABTextDialog("Upload TAB-TEXT");
-
-                    }).show();
+            UploadUrlORTABTextDialog("Upload Url");
         });
 
         binding.uploadOwnAds.setOnClickListener(v -> UploadOwnAdsDialog());

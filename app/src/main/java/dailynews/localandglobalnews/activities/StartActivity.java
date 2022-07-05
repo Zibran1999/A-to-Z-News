@@ -1,10 +1,10 @@
 package dailynews.localandglobalnews.activities;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -12,7 +12,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -22,14 +21,10 @@ import java.util.Calendar;
 
 import dailynews.localandglobalnews.R;
 import dailynews.localandglobalnews.databinding.ActivityStartBinding;
-import dailynews.localandglobalnews.models.tabTextAndUrls.UrlOrTAbTextModel;
 import dailynews.localandglobalnews.utils.ApiInterface;
 import dailynews.localandglobalnews.utils.ApiWebServices;
 import dailynews.localandglobalnews.utils.CommonMethods;
 import dailynews.localandglobalnews.utils.ShowAds;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class StartActivity extends AppCompatActivity {
     ActivityStartBinding binding;
@@ -37,6 +32,7 @@ public class StartActivity extends AppCompatActivity {
     ApiInterface apiInterface;
     ShowAds showAds = new ShowAds();
     Dialog dialog;
+    boolean check = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,10 +42,6 @@ public class StartActivity extends AppCompatActivity {
         apiInterface = ApiWebServices.getApiInterface();
         firebaseAnalytics = FirebaseAnalytics.getInstance(this);
         dialog = CommonMethods.getLoadingDialog(this);
-        new Handler().postDelayed(() -> {
-            showAds.showTopBanner(this, binding.adViewTop);
-            showAds.showBottomBanner(this, binding.adViewBottom);
-        }, 1000);
         final Animation myAnim = AnimationUtils.loadAnimation(this, R.anim.bounce);
 
         binding.buttonStart.setVisibility(View.VISIBLE);
@@ -74,6 +66,7 @@ public class StartActivity extends AppCompatActivity {
 
     }
 
+    @SuppressLint("SetTextI18n")
     private void setGreetings() {
         Calendar calendar = Calendar.getInstance();
         int hours = calendar.get(Calendar.HOUR_OF_DAY);
@@ -97,12 +90,17 @@ public class StartActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         IronSource.onPause(this);
+        showAds.destroyBanner();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         IronSource.onResume(this);
+        new Handler().postDelayed(() -> {
+            showAds.showTopBanner(this, binding.adViewTop);
+            showAds.showBottomBanner(this, binding.adViewBottom);
+        }, 1000);
     }
 
     @Override
@@ -114,7 +112,7 @@ public class StartActivity extends AppCompatActivity {
     private void ShowExitDialog() {
         Dialog exitDialog = new Dialog(StartActivity.this);
         exitDialog.setContentView(R.layout.exit_dialog_layout);
-        exitDialog.getWindow().setLayout(600, ViewGroup.LayoutParams.WRAP_CONTENT);
+        exitDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         exitDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         exitDialog.setCancelable(false);
         exitDialog.show();
@@ -123,9 +121,7 @@ public class StartActivity extends AppCompatActivity {
         TextView okBtn = exitDialog.findViewById(R.id.ok);
         ImageView cancelBtn = exitDialog.findViewById(R.id.dismiss_btn);
 
-        cancelBtn.setOnClickListener(v -> {
-            exitDialog.dismiss();
-        });
+        cancelBtn.setOnClickListener(v -> exitDialog.dismiss());
         okBtn.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_MAIN);
             intent.addCategory(Intent.CATEGORY_HOME);
@@ -135,13 +131,9 @@ public class StartActivity extends AppCompatActivity {
             System.exit(0);
         });
 
-        rateNow.setOnClickListener(v -> {
-            CommonMethods.rateApp(getApplicationContext());
-        });
-
+        rateNow.setOnClickListener(v -> CommonMethods.rateApp(getApplicationContext()));
 
     }
-
 
     @Override
     protected void onStart() {
@@ -149,7 +141,7 @@ public class StartActivity extends AppCompatActivity {
         if (getIntent().getStringExtra("key") != null) {
             if (getIntent().getStringExtra("key").equals("inter")) {
                 showAds.showInterstitialAds(this);
-
+                check = false;
             }
         }
     }

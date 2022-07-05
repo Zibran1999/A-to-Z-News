@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import dailynews.localandglobalnews.R;
@@ -37,13 +36,13 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.carousel_item_layout,parent,false);
+        View view = LayoutInflater.from(context).inflate(R.layout.carousel_item_layout, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Glide.with(context).load(ApiWebServices.base_url + "all_categories_images/" +newCatModelList.get(position).getBanner()).into(holder.catNewsImageView);
+        Glide.with(context).load(ApiWebServices.base_url + "all_categories_images/" + newCatModelList.get(position).getBanner()).into(holder.catNewsImageView);
         holder.catNewsTitle.setText(newCatModelList.get(position).getTitle());
         holder.itemView.setOnClickListener(view -> categoryInterface.OnCatClicked(newCatModelList.get(position)));
         if (preferences.getString("action", "").equals("cat")) {
@@ -73,6 +72,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
     public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView catNewsImageView;
         TextView catNewsTitle;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             catNewsImageView = itemView.findViewById(R.id.newsImage);

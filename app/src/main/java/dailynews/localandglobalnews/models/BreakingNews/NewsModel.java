@@ -6,28 +6,40 @@ import java.io.Serializable;
 
 public class NewsModel implements Serializable {
     @SerializedName("id")
-    private String id;
+    private final String id;
     @SerializedName("catId")
-    private String catId;
+    private final String catId;
     @SerializedName("news_img")
-    private String newsImg;
+    private final String newsImg;
     @SerializedName("title")
-    private String title;
+    private final String title;
     @SerializedName("engTitle")
-    private String engTitle;
+    private final String engTitle;
     @SerializedName("url")
-    private String url;
+    private final String url;
     @SerializedName("desc")
-    private String hinDesc;
+    private final String hinDesc;
 
     @SerializedName("engDesc")
-    private String engDesc;
+    private final String engDesc;
 
     @SerializedName("date")
-    private String date;
+    private final String date;
     @SerializedName("time")
-    private String time;
+    private final String time;
 
+    public NewsModel(String id, String catId, String newsImg, String title, String engTitle, String url, String hinDesc, String engDesc, String date, String time) {
+        this.id = id;
+        this.catId = catId;
+        this.newsImg = newsImg;
+        this.title = title;
+        this.engTitle = engTitle;
+        this.url = url;
+        this.hinDesc = hinDesc;
+        this.engDesc = engDesc;
+        this.date = date;
+        this.time = time;
+    }
 
     public String getId() {
         return id;

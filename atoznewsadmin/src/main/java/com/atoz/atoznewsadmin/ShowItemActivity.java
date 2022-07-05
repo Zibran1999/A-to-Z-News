@@ -257,7 +257,6 @@ public class ShowItemActivity extends AppCompatActivity implements QuizInterface
         ans.setText(quizModel.getAns());
 
         uploadQuizQuestionBtn.setOnClickListener(v -> {
-
             String ques, opt1, opt2, opt3, opt4, answer;
 
             ques = question.getText().toString().trim();

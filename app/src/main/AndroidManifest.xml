@@ -30,9 +30,6 @@
             android:name=".activities.ShowAllItemsActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.SubCategoryActivity"
-            android:exported="false" />
-        <activity
             android:name=".activities.NewsDetailsActivity"
             android:exported="false" />
         <activity

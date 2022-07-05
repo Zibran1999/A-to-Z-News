@@ -34,7 +34,7 @@
     <string name="show_trending_news">Show Trending News</string>
     <string name="show_gadgets_news">Show Reviews</string>
     <string name="_12_00_am">12:00 AM</string>
-    <string name="update_url_amp_text"><![CDATA[Update Url & Tab Text]]></string>
+    <string name="update_url_amp_text">Update Url</string>
 
     <string name="upload_own_ads">Upload Own Ads</string>
     <string name="upload_image_and_url">Upload Image And url</string>

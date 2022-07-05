@@ -1,10 +1,13 @@
 package dailynews.localandglobalnews.activities;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -13,10 +16,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.widget.NestedScrollView;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
+import com.ironsource.mediationsdk.IronSource;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,18 +45,20 @@ public class PlayQuizActivity extends AppCompatActivity implements View.OnClickL
     int currentPos, questionAttempted = 1, currentScore = 0;
     NestedScrollView quiz;
     MaterialCardView score;
-    LottieAnimationView lottieAnimationView;
     List<QuizModel> quizModelList = new ArrayList<>();
     ShowAds showAds = new ShowAds();
     Random random;
     CatViewModel viewModel;
     String key;
+    SharedPreferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         quizBinding = ActivityPlayQuizBinding.inflate(getLayoutInflater());
         setContentView(quizBinding.getRoot());
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
         key = getIntent().getStringExtra("id");
         setQuizLayout();
     }
@@ -68,19 +73,8 @@ public class PlayQuizActivity extends AppCompatActivity implements View.OnClickL
         quiz = quizBinding.quiz;
         score = quizBinding.score;
         getLifecycle().addObserver(showAds);
+        showAds.showInterstitialAds(this);
 
-        if (Paper.book().read(Prevalent.bannerTopNetworkName).equals("IronSourceWithMeta")) {
-            quizBinding.adViewQuiz.setVisibility(View.GONE);
-            showAds.showBottomBanner(this, quizBinding.adViewBottom);
-
-        } else if (Paper.book().read(Prevalent.bannerBottomNetworkName).equals("IronSourceWithMeta")) {
-            quizBinding.adViewBottom.setVisibility(View.GONE);
-            showAds.showTopBanner(this, quizBinding.adViewQuiz);
-
-        } else {
-            showAds.showTopBanner(this, quizBinding.adViewQuiz);
-            showAds.showBottomBanner(this, quizBinding.adViewBottom);
-        }
 
         viewModel = new ViewModelProvider(this, new CatViewModelFactory(this.getApplication(), key)).get(CatViewModel.class);
         viewModel.getQuizQuestions().observe(this, quizModelList1 -> {
@@ -106,7 +100,6 @@ public class PlayQuizActivity extends AppCompatActivity implements View.OnClickL
 
     @SuppressLint("SetTextI18n")
     private void setDataToViews(int currentPos) {
-//        lottieAnimationView.setVisibility(View.GONE);
         if (questionAttempted <= 15) {
             questionNo.setText(questionAttempted + "/15");
             if (!Objects.equals(quizModelList.get(currentPos).getImg(), "null")) {
@@ -289,18 +282,8 @@ public class PlayQuizActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void resetButtonColor() {
-        if (Paper.book().read(Prevalent.bannerTopNetworkName).equals("IronSourceWithMeta")) {
-            quizBinding.adViewQuiz.setVisibility(View.GONE);
-            showAds.showBottomBanner(this, quizBinding.adViewBottom);
-
-        } else if (Paper.book().read(Prevalent.bannerBottomNetworkName).equals("IronSourceWithMeta")) {
-            quizBinding.adViewBottom.setVisibility(View.GONE);
-            showAds.showTopBanner(this, quizBinding.adViewQuiz);
-
-        } else {
-            showAds.showTopBanner(this, quizBinding.adViewQuiz);
-            showAds.showBottomBanner(this, quizBinding.adViewBottom);
-        }
+        showAds.showTopBanner(this, quizBinding.adViewQuiz);
+        showAds.showBottomBanner(this, quizBinding.adViewBottom);
         op1.setClickable(true);
         op2.setClickable(true);
         op3.setClickable(true);
@@ -328,5 +311,38 @@ public class PlayQuizActivity extends AppCompatActivity implements View.OnClickL
         quizBinding.optFourCard.setStrokeColor(ColorStateList.valueOf(getResources().getColor(R.color.purple_700)));
 
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        showAds.showTopBanner(this, quizBinding.adViewQuiz);
+        showAds.showBottomBanner(this, quizBinding.adViewBottom);
+
+        IronSource.onResume(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        showAds.destroyBanner();
+        IronSource.onPause(this);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (preferences.getString("action", "").equals("")) {
+            super.onBackPressed();
+            showAds.destroyBanner();
+        } else {
+            showAds.destroyBanner();
+            preferences.edit().clear().apply();
+            Intent intent = new Intent(this, HomeActivity.class);
+            startActivity(intent);
+            overridePendingTransition(0, 0);
+            finish();
+            overridePendingTransition(0, 0);
+
+        }
     }
 }

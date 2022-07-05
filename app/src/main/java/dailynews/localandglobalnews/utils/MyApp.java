@@ -194,7 +194,7 @@ public class MyApp extends Application {
                 switch (activityToBeOpened) {
                     case "home":
                     case "cat":
-                    case "bra":
+                    case "bre":
                     case "tre":
                     case "quiz":
                     case "gad": {

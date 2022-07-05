@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -212,7 +213,7 @@ public class ShowNewsActivity extends AppCompatActivity implements NewsAdapter.N
         uploadNewsBinding.breakingNews.setChecked(Boolean.parseBoolean(newsModel.getBreaking()));
         uploadNewsBinding.gadgets.setChecked(Boolean.parseBoolean(newsModel.getGadgets()));
 
-
+        uploadNewsBinding.breakingNews.setVisibility(View.VISIBLE);
 
         encodedImg = newsModel.getNewsImg();
         uploadNewsBinding.upload.setOnClickListener(view -> {

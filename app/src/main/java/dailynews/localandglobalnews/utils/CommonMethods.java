@@ -70,20 +70,19 @@ public class CommonMethods {
         }
     }
 
+
     public static void contactUs(Context context) {
         Intent i = new Intent(Intent.ACTION_SEND);
         i.setPackage("com.google.android.gm");
         i.setType("message/rfc822");
         i.putExtra(Intent.EXTRA_EMAIL, new String[]{"help.atoznews@gmail.com"});
-        i.putExtra(Intent.EXTRA_SUBJECT, "Regards Best Product Reviews!");
-        i.putExtra(Intent.EXTRA_TEXT, "Hi Team PR,\n" +
+        i.putExtra(Intent.EXTRA_SUBJECT, "I need some help regarding ");
+        i.putExtra(Intent.EXTRA_TEXT, "Hi Team A To Z News,\n" +
                 "Its So Glad to Connect...\n" +
                 "\n" +
                 "This is \"Your Name\"\uD83D\uDE0A\n" +
                 "\n" +
-                "And I need Help Regards\n" +
-                "\n" +
-                "World's Best Product With Unbiased Review..... ");
+                "And I need Help Regards\n");
         try {
             context.startActivity(Intent.createChooser(i, "Send mail..."));
         } catch (ActivityNotFoundException ex) {

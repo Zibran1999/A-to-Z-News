@@ -11,7 +11,6 @@ import androidx.core.text.HtmlCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.ironsource.mediationsdk.IronSource;
@@ -23,7 +22,6 @@ import dailynews.localandglobalnews.adapters.NewsAdapter;
 import dailynews.localandglobalnews.adapters.OtherNewsAdapter;
 import dailynews.localandglobalnews.databinding.ActivityShowAllItemsBinding;
 import dailynews.localandglobalnews.models.BreakingNews.NewsModel;
-import dailynews.localandglobalnews.models.BreakingNews.NewsModelFactory;
 import dailynews.localandglobalnews.models.BreakingNews.NewsViewModel;
 import dailynews.localandglobalnews.models.catNewsItems.CatNewsItemModelFactory;
 import dailynews.localandglobalnews.models.catNewsItems.CatNewsItemViewModel;
@@ -85,9 +83,11 @@ public class ShowAllItemsActivity extends AppCompatActivity implements OtherNews
 
             case "breakingNews":
 
-                newsViewModel = new ViewModelProvider(ShowAllItemsActivity.this, new NewsModelFactory(
-                        this.getApplication(), "breaking_news")).get(NewsViewModel.class);
-                StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+                catNewsItemViewModel = new ViewModelProvider(this,
+                        new CatNewsItemModelFactory(this.getApplication(), "breaking_news")).get(CatNewsItemViewModel.class);
+
+                LinearLayoutManager staggeredGridLayoutManager = new LinearLayoutManager(this);
+                staggeredGridLayoutManager.setOrientation(RecyclerView.VERTICAL);
                 showAllItemRecyclerView.setLayoutManager(staggeredGridLayoutManager);
                 newsAdapter = new NewsAdapter(this, this, true);
                 showAllItemRecyclerView.setAdapter(newsAdapter);
@@ -110,7 +110,7 @@ public class ShowAllItemsActivity extends AppCompatActivity implements OtherNews
     }
 
     private void fetchBreakingNews() {
-        newsViewModel.getAllNews().observe(ShowAllItemsActivity.this, newsModels -> {
+        catNewsItemViewModel.getCatNewsItems().observe(ShowAllItemsActivity.this, newsModels -> {
             if (!newsModels.isEmpty()) {
                 breakingNewsModelList.clear();
                 breakingNewsModelList.addAll(newsModels);

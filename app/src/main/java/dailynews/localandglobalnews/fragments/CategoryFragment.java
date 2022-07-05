@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Objects;
 
 import dailynews.localandglobalnews.activities.PlayQuizActivity;
-import dailynews.localandglobalnews.activities.ShowAllItemsActivity;
 import dailynews.localandglobalnews.adapters.QuizCategoryAdapter;
 import dailynews.localandglobalnews.databinding.FragmentCategoryBinding;
 import dailynews.localandglobalnews.models.category.CatModel;

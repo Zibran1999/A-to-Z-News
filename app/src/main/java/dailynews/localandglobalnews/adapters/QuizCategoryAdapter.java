@@ -134,11 +134,11 @@ public class QuizCategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         private void bindAdData() {
             Log.d("admobAdNative", Paper.book().read(Prevalent.nativeAds));
-            if (Objects.equals(Paper.book().read(Prevalent.nativeAdsType), "Native")) {
-                showAds.showNativeAds(context, binding.adLayout);
-            } else if (Objects.equals(Paper.book().read(Prevalent.nativeAdsType), "MREC")) {
-                showAds.showMrec(context, binding.adLayout);
-            }
+//            if (Objects.equals(Paper.book().read(Prevalent.nativeAdsType), "Native")) {
+//                showAds.showNativeAds(context, binding.adLayout);
+//            } else if (Objects.equals(Paper.book().read(Prevalent.nativeAdsType), "MREC")) {
+//                showAds.showMrec(context, binding.adLayout);
+//            }
 
         }
     }

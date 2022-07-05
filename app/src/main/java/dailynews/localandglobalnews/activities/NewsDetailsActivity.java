@@ -24,7 +24,6 @@ import com.ironsource.mediationsdk.IronSource;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -37,15 +36,13 @@ import dailynews.localandglobalnews.utils.CommonMethods;
 import dailynews.localandglobalnews.utils.ShowAds;
 
 public class NewsDetailsActivity extends AppCompatActivity {
+    public static final String URL_REGEX = "^((https?|ftp)://|(www|ftp)\\.)?[a-z0-9-]+(\\.[a-z0-9-]+)+([/?].*)?$";
     ActivityNewsDetailsBinding binding;
     NewsModel newsModel;
     String hindiDesc, englishDesc, plainText;
     Spanned spanned;
     char[] chars;
-    public static final String URL_REGEX = "^((https?|ftp)://|(www|ftp)\\.)?[a-z0-9-]+(\\.[a-z0-9-]+)+([/?].*)?$";
-
     ShowAds showAds = new ShowAds();
-    String hindiTitle;
     FirebaseAnalytics mFirebaseAnalytics;
     Bundle bundle = new Bundle();
     SharedPreferences preferences;
@@ -58,17 +55,13 @@ public class NewsDetailsActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
-        binding.backIcon.setOnClickListener(v -> {
-            onBackPressed();
-        });
+        binding.backIcon.setOnClickListener(v -> onBackPressed());
         Bundle bundle = getIntent().getExtras();
         newsModel = (NewsModel) bundle.getSerializable("news");
         Glide.with(NewsDetailsActivity.this)
                 .load(ApiWebServices.base_url + "all_news_images/" + newsModel.getNewsImg())
                 .into(binding.newsDetailsImageView);
 
-        showAds.showTopBanner(this, binding.adViewTop);
-        showAds.showBottomBanner(this, binding.adViewBottom);
         getLifecycle().addObserver(showAds);
         showAds.showInterstitialAds(this);
 
@@ -83,15 +76,11 @@ public class NewsDetailsActivity extends AppCompatActivity {
                 binding.newDetailsDesc.loadData(String.valueOf(HtmlCompat.fromHtml(englishDesc, HtmlCompat.FROM_HTML_MODE_LEGACY)), "text/html", "UTF-8");
                 binding.materialButtonToggleGroup.check(R.id.englishPreview);
                 binding.readMoreBtn.setText(R.string.read_more);
-                binding.whatsappShare.setOnClickListener(v -> {
-                    shareData(String.valueOf(HtmlCompat.fromHtml(newsModel.getEngTitle(), HtmlCompat.FROM_HTML_MODE_LEGACY)));
-                });
+                binding.whatsappShare.setOnClickListener(v -> shareData(String.valueOf(HtmlCompat.fromHtml(newsModel.getEngTitle(), HtmlCompat.FROM_HTML_MODE_LEGACY))));
 
             }
         } else {
-            binding.whatsappShare.setOnClickListener(v -> {
-                shareData(String.valueOf(HtmlCompat.fromHtml(newsModel.getTitle(), HtmlCompat.FROM_HTML_MODE_LEGACY)));
-            });
+            binding.whatsappShare.setOnClickListener(v -> shareData(String.valueOf(HtmlCompat.fromHtml(newsModel.getTitle(), HtmlCompat.FROM_HTML_MODE_LEGACY))));
             binding.newDetailsTitle.setText(HtmlCompat.fromHtml(newsModel.getTitle(), HtmlCompat.FROM_HTML_MODE_LEGACY));
             hindiDesc = newsModel.getHinDesc();
             spanned = HtmlCompat.fromHtml(hindiDesc, HtmlCompat.FROM_HTML_MODE_LEGACY);
@@ -108,12 +97,9 @@ public class NewsDetailsActivity extends AppCompatActivity {
             if (isChecked) {
                 switch (checkedId) {
                     case R.id.hindiPreview:
-                        binding.whatsappShare.setOnClickListener(v -> {
-                            shareData(String.valueOf(HtmlCompat.fromHtml(newsModel.getTitle(), HtmlCompat.FROM_HTML_MODE_LEGACY)));
-                        });
+                        binding.whatsappShare.setOnClickListener(v -> shareData(String.valueOf(HtmlCompat.fromHtml(newsModel.getTitle(), HtmlCompat.FROM_HTML_MODE_LEGACY))));
                         binding.newDetailsTitle.setText(HtmlCompat.fromHtml(newsModel.getTitle(), HtmlCompat.FROM_HTML_MODE_LEGACY));
-                        showAds.showTopBanner(this, binding.adViewTop);
-                        showAds.showBottomBanner(this, binding.adViewBottom);
+                       fetchBanner();
                         binding.readMoreBtn.setText(R.string.read_more_hindi);
                         hindiDesc = newsModel.getHinDesc().replaceAll("<.*?>", "");
                         spanned = HtmlCompat.fromHtml(hindiDesc, HtmlCompat.FROM_HTML_MODE_LEGACY);
@@ -124,12 +110,9 @@ public class NewsDetailsActivity extends AppCompatActivity {
 
                         break;
                     case R.id.englishPreview:
-                        binding.whatsappShare.setOnClickListener(v -> {
-                            shareData(String.valueOf(HtmlCompat.fromHtml(newsModel.getEngTitle(), HtmlCompat.FROM_HTML_MODE_LEGACY)));
-                        });
+                        binding.whatsappShare.setOnClickListener(v -> shareData(String.valueOf(HtmlCompat.fromHtml(newsModel.getEngTitle(), HtmlCompat.FROM_HTML_MODE_LEGACY))));
                         binding.newDetailsTitle.setText(HtmlCompat.fromHtml(newsModel.getEngTitle(), HtmlCompat.FROM_HTML_MODE_LEGACY));
-                        showAds.showTopBanner(this, binding.adViewTop);
-                        showAds.showBottomBanner(this, binding.adViewBottom);
+                       fetchBanner();
                         binding.readMoreBtn.setText(R.string.read_more);
                         englishDesc = newsModel.getEngDesc().replaceAll("<.*?>", "");
                         spanned = HtmlCompat.fromHtml(englishDesc, HtmlCompat.FROM_HTML_MODE_LEGACY);
@@ -151,17 +134,16 @@ public class NewsDetailsActivity extends AppCompatActivity {
         });
 
 
-
         Pattern p = Pattern.compile(URL_REGEX);
         Matcher m = p.matcher(newsModel.getUrl());//replace with string to compare
-        if(m.find()) {
+        if (m.find()) {
             binding.readMoreBtn.setVisibility(View.VISIBLE);
             binding.readMoreBtn.setOnClickListener(v -> {
                 openWebPage(newsModel.getUrl(), NewsDetailsActivity.this);
                 bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Read More");
                 mFirebaseAnalytics.logEvent("Clicked_On_read_more", bundle);
             });
-        }else {
+        } else {
             binding.readMoreBtn.setVisibility(View.GONE);
         }
 
@@ -192,7 +174,7 @@ public class NewsDetailsActivity extends AppCompatActivity {
             Intent i = new Intent(Intent.ACTION_SEND);
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             i.setType("image/*");
-            i.setPackage("com.whatsapp");
+//            i.setPackage("com.whatsapp");
             i.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             String shareMessage = title + "\n\n" + "That's Awesome...\uD83D\uDC40 \n\n Install Now!☺☺ \n\n";
@@ -203,25 +185,6 @@ public class NewsDetailsActivity extends AppCompatActivity {
         } catch (Exception e) {
             Log.e("ContentValue", e.getMessage());
 
-            try {
-                FileOutputStream outputStream = new FileOutputStream(file);
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
-                outputStream.flush();
-                outputStream.close();
-                Intent i = new Intent(Intent.ACTION_SEND);
-                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                i.setType("image/*");
-                i.setPackage("com.whatsapp.w4b");
-                i.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
-                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                String shareMessage = newsModel.getTitle() + "\n\n" + "That's Awesome...\uD83D\uDC40 \n\n Install Now!☺☺ \n\n";
-                shareMessage = shareMessage + "https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID + "\n\n";
-                i.putExtra(Intent.EXTRA_TEXT, shareMessage);
-                startActivity(Intent.createChooser(i, "Share News from " + this.getString(R.string.app_name)));
-
-            } catch (Exception exception) {
-                exception.printStackTrace();
-            }
         }
 
     }
@@ -259,9 +222,20 @@ public class NewsDetailsActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        showAds.showTopBanner(this, binding.adViewTop);
-        showAds.showBottomBanner(this, binding.adViewBottom);
+        fetchBanner();
+
         IronSource.onResume(this);
+    }
+
+    private void fetchBanner() {
+        Pattern p = Pattern.compile(URL_REGEX);
+        Matcher m = p.matcher(newsModel.getUrl());//replace with string to compare
+        if (m.find()) {
+            showAds.showTopBanner(this, binding.adViewTop);
+        } else {
+            showAds.showTopBanner(this, binding.adViewTop);
+            showAds.showBottomBanner(this, binding.adViewBottom);
+        }
     }
 
     @Override
